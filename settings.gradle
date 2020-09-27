@@ -1,0 +1,3 @@
+rootProject.name='Android-ad'
+include ':app'
+include ':lib-ad-ingot:lib-ad-base', ':lib-ad-ingot:lib-ad-main',':lib-ad-ingot:lib-ad-google-admob',':lib-ad-ingot:lib-ad-huawei'

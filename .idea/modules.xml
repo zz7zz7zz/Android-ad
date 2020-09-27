@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Android-ad.iml" filepath="$PROJECT_DIR$/Android-ad.iml" group="Android-ad" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="Android-ad/app" />
+      <module fileurl="file://$PROJECT_DIR$/lib-ad-ingot/lib-ad-base/lib-ad-base.iml" filepath="$PROJECT_DIR$/lib-ad-ingot/lib-ad-base/lib-ad-base.iml" group="Android-ad/lib-ad-ingot/lib-ad-base" />
+      <module fileurl="file://$PROJECT_DIR$/lib-ad-ingot/lib-ad-google-admob/lib-ad-google-admob.iml" filepath="$PROJECT_DIR$/lib-ad-ingot/lib-ad-google-admob/lib-ad-google-admob.iml" group="Android-ad/lib-ad-ingot/lib-ad-google-admob" />
+      <module fileurl="file://$PROJECT_DIR$/lib-ad-ingot/lib-ad-huawei/lib-ad-huawei.iml" filepath="$PROJECT_DIR$/lib-ad-ingot/lib-ad-huawei/lib-ad-huawei.iml" group="Android-ad/lib-ad-ingot/lib-ad-huawei" />
+      <module fileurl="file://$PROJECT_DIR$/lib-ad-ingot/lib-ad-ingot.iml" filepath="$PROJECT_DIR$/lib-ad-ingot/lib-ad-ingot.iml" group="Android-ad/lib-ad-ingot" />
+      <module fileurl="file://$PROJECT_DIR$/lib-ad-ingot/lib-ad-main/lib-ad-main.iml" filepath="$PROJECT_DIR$/lib-ad-ingot/lib-ad-main/lib-ad-main.iml" group="Android-ad/lib-ad-ingot/lib-ad-main" />
+    </modules>
+  </component>
+</project>
