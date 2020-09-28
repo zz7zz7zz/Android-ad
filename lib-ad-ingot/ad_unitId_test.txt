@@ -1,0 +1,78 @@
+测试广告位Id如下：
+
+---------------------- Google ----------------------
+
+1.Banner
+ca-app-pub-3940256099942544/6300978111
+
+2.原生
+ca-app-pub-3940256099942544/2247696110
+
+3.插屏
+ca-app-pub-3940256099942544/1033173712
+
+4.激励广告
+ca-app-pub-3940256099942544/5224354917
+
+5.开屏广告
+ca-app-pub-3940256099942544/1033173712
+
+
+---------------------- Facebook ----------------------
+https://developers.facebook.com/docs/audience-network/guides/test/inserted-code
+
+1.Banner
+
+
+2.原生
+
+
+3.插屏
+
+
+4.激励广告
+
+---------------------- Twitter ----------------------
+https://developers.mopub.com/publishers/android/test/
+
+1.Banner
+
+
+2.原生
+
+
+3.插屏
+
+
+4.激励广告
+
+---------------------- Huawei ----------------------
+
+1.Banner
+testw6vs28auh3
+
+2.原生
+原生广告 大图文 1080*607 16:9  testu7m3hc4gvm
+原生广告 小图文 225*150   3:2  testb65czjivt9
+原生广告 视频文 640*360  16:9  testy63txaom86
+
+3.插屏
+插屏广告 图片 竖屏 1080*1620 teste9ih9j0rc3
+插屏广告 视频 竖屏 720*1080  testb4znbuh3n2
+
+4.激励广告
+激励视频 视频 testx9dtjwj8hp
+
+5.开屏广告
+开屏 纯图 1080*1620 2:3 testq6zq98hecj
+开屏 视频 720*1280 9:16 testd7c5cewoj6
+
+6.极速开屏
+
+
+
+
+
+
+
+
