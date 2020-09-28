@@ -5,7 +5,7 @@ buildscript {
     repositories {
         google()
         jcenter()
-        
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.6.1'
@@ -13,6 +13,9 @@ buildscript {
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+
+        //代码上传到maven的插件
+        classpath 'com.novoda:bintray-release:0.9.2'
     }
 }
 
@@ -20,7 +23,17 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
+
+        //本地Maven仓库地址
+//        maven {
+//            url 'file:/Users/long/AndroidStudioProjects/Android-ad/repository'
+//        }
+
+        //已经上传了代码到bintray但是没有添加到jcenter前需要加入仓库地址；加入到jcenter则不需要了
+//        maven {
+//            url 'https://dl.bintray.com/org-001/maven'
+//        }
+
     }
 }
 

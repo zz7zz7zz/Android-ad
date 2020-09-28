@@ -1,0 +1,51 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        minSdkVersion 17
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation project(path: ':lib-ad-ingot:lib-ad-base')
+    implementation project(path: ':lib-ad-ingot:lib-ad-google-admob')
+    implementation project(path: ':lib-ad-ingot:lib-ad-huawei')
+}
+
+//本地仓库 https://blog.csdn.net/xmxkf/article/details/80674232
+//1.以下只会将lib-ad-main，也即本模块打入aar中
+uploadArchives{
+    repositories.mavenDeployer{
+        // 配置本地仓库路径，项目根目录下的repository目录中
+        repository(url: uri('../../repository'))
+        pom.groupId = "com.module.libs"// 唯一标识（通常为模块包名，也可以任意）
+        pom.artifactId = "ad" // 项目名称（通常为类库模块名称，也可以任意）
+        pom.version = "0.0.1" // 版本号
+    }
+}
+
+//问题：如何将多模块合并成一个模块，合并会有什么问题（比如资源文件R文件以及其它文件等） https://www.jianshu.com/p/8f9cf6271c20

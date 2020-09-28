@@ -1,17 +1,18 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.module.addemo"
         minSdkVersion 17
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
     }
 
     buildTypes {
@@ -27,10 +28,22 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-//    implementation project(path: ':lib-ad-ingot:lib-ad-main')
-    implementation 'com.module:ad-ingot:0.0.1'
+    implementation project(path: ':lib-ad-ingot:lib-ad-base')
+    implementation project(path: ':lib-ad-ingot:lib-ad-google-admob')
+    implementation project(path: ':lib-ad-ingot:lib-ad-huawei')
+}
+
+//插件用法 https://github.com/novoda/bintray-release
+//csdn文章 https://blog.csdn.net/xmxkf/article/details/80674232
+//简书文章 https://www.jianshu.com/p/bdcd00c2470b
+publish {
+    userOrg = 'org-001'
+    groupId = 'com.module'
+    artifactId = 'ad-ingot'
+    publishVersion = '0.0.1'
+    desc = '元宝SDK，出生了!'
+    website = 'https://github.com/zz7zz7zz/Android-ad'
 }
