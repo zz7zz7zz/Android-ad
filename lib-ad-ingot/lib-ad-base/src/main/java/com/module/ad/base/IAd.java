@@ -1,9 +1,14 @@
 package com.module.ad.base;
 
+import android.content.Context;
+import android.view.ViewGroup;
+
 public interface IAd {
 
-    void onAdPreload(int adUnit,int adType);
+    void onInit(Context context);
 
-    void onAdShow(int adUnit,int adType);
+    void onAdPreload(Context context, AdEntity adEntity, IAdListener listener);
+
+    void onAdShow(Context context, AdEntity adEntity, IAdListener listener, ViewGroup adViewParent);
 
 }
