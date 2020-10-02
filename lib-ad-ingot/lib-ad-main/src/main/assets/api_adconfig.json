@@ -1,0 +1,58 @@
+{
+  "code" : "200",
+  "msg" : "ok",
+  "ver" : "1.0.0",
+  "adPlaceHolderList" : [ {
+    "adPlaceHolder" : "1",
+    "adFreqType" : 1,
+    "adFreq" : 10,
+    "adOffset" : 2,
+    "adBufferSize" : 1,
+    "adProviderList" : [ {
+      "adProviderName" : "Google",
+      "adUnitId" : "ca-mb-app-pub-6880199350778581/2584411281",
+      "adType" : "1",
+      "adTtl" : "-1"
+    }, {
+      "adProviderName" : "Huawei",
+      "adUnitId" : "ca-app-pub-7636229885890988/5652976156",
+      "adType" : "1",
+      "adTtl" : "3600"
+    }],
+    "adReuseList" : [ {
+      "adPlaceHolder" : "2",
+      "adProviderName" : "Huawei",
+      "adType" : "1"
+    }, {
+      "adPlaceHolder" : "2",
+      "adProviderName" : "Huawei",
+      "adType" : "1"
+    }]
+  }, {
+    "adPlaceHolder" : "2",
+    "adFreqType" : 2,
+    "adFreq" : 0,
+    "adOffset" : 60,
+    "adBufferSize" : 1,
+    "adProviderList" : [ {
+      "adProviderName" : "Google",
+      "adUnitId" : "ca-mb-app-pub-6880199350778581/2584411281",
+      "adType" : "1",
+      "adTtl" : "-1"
+    }, {
+      "adProviderName" : "Huawei",
+      "adUnitId" : "ca-app-pub-7636229885890988/5652976156",
+      "adType" : "1",
+      "adTtl" : "3600"
+    }],
+    "adReuseList" : [ {
+      "adPlaceHolder" : "2",
+      "adProviderName" : "Huawei",
+      "adType" : "1"
+    }, {
+      "adPlaceHolder" : "2",
+      "adProviderName" : "Huawei",
+      "adType" : "1"
+    }]
+  }]
+}
