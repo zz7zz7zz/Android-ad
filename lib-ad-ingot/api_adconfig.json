@@ -19,7 +19,7 @@
       "adType" : "1",
       "adTtl" : "3600"
     }],
-    "adReuseOrder" : [ {
+    "adReuseList" : [ {
       "adPlaceHolder" : "2",
       "adProviderName" : "Huawei",
       "adType" : "1"
@@ -45,7 +45,7 @@
       "adType" : "1",
       "adTtl" : "3600"
     }],
-    "adReuseOrder" : [ {
+    "adReuseList" : [ {
       "adPlaceHolder" : "2",
       "adProviderName" : "Huawei",
       "adType" : "1"
