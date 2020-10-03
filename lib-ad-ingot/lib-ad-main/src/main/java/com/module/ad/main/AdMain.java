@@ -1,5 +1,6 @@
 package com.module.ad.main;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
@@ -98,7 +99,7 @@ public class AdMain {
         show(context,adPlaceHolder,null,adViewParent);
     }
 
-    public void show(Context context, int adPlaceHolder, String adProviderName, ViewGroup adViewParent){
+    public void show(final Context context, final int adPlaceHolder, final String adProviderName, ViewGroup adViewParent){
 
         AdEntity adEntity = getShowAdEntity(adPlaceHolder,adProviderName);
 
@@ -117,7 +118,21 @@ public class AdMain {
 
         if(null != adEntity){
             adEntity.showAdPlaceHolder = adPlaceHolder;
-            adEntity.ad.onAdShow(context,adEntity, proxyListener,adViewParent);
+            //如果想展示Banner/Native又没有父布局，则通过对话框模拟插屏进行展示
+            if(context instanceof Activity && null == adViewParent && (adEntity.adProvider.adType == 1 || adEntity.adProvider.adType == 2)){
+                final AdEntity finalAdEntity = adEntity;
+                AdDialog.show((Activity) context, new AdDialog.IAdDialogListener() {
+                    @Override
+                    public void onShow(ViewGroup ...adViewParent) {
+                        finalAdEntity.ad.onAdShow(context, finalAdEntity, proxyListener,adViewParent[0]);
+
+                        //以下逻辑可以展示多个广告
+                        //show(context,adPlaceHolder,adProviderName,adViewParent[1]);
+                    }
+                });
+            }else{
+                adEntity.ad.onAdShow(context,adEntity, proxyListener,adViewParent);
+            }
         }
     }
 

@@ -30,7 +30,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.showAd:
-                AdMain.getInstance().show(this,1,(ViewGroup) findViewById(R.id.ad_parent_banner));
+//                AdMain.getInstance().show(this,1,(ViewGroup) findViewById(R.id.ad_parent));
+                AdMain.getInstance().show(this,1,null);
                 break;
         }
     }

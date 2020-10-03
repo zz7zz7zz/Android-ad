@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <!-- Dialog -->
+    <style name="DialogDefault" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:backgroundDimEnabled">true</item>
+        <!--<item name="android:background">#FAFAFA</item>-->
+        <item name="colorAccent">#3CADF2</item>
+        <!--<item name="colorPrimary">#FAFAFA</item>-->
+        <!--<item name="colorPrimaryDark">#FAE0E0</item>-->
+        <item name="android:textColorPrimary">#727272</item>
+    </style>
+
+    <style name="BottomDialog" parent="DialogDefault">
+        <item name="android:windowBackground">#00000000</item>
+        <item name="android:windowAnimationStyle">@style/AnimationMoreBottom</item>
+        <item name="android:windowEnterAnimation">@anim/ad_bottom_up</item>
+        <item name="android:windowExitAnimation">@anim/ad_bottom_down</item>
+    </style>
+
+    <!-- 底部弹出动画 -->
+    <style name="AnimationMoreBottom">
+        <item name="android:windowEnterAnimation">@anim/ad_bottom_up</item>
+        <item name="android:windowExitAnimation">@anim/ad_bottom_down</item>
+    </style>
+</resources>
