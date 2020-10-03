@@ -31,7 +31,7 @@ public class HwNative implements IAd {
     }
 
     @Override
-    public void onAdPreload(Context context, final AdEntity adEntity, final IAdListener listener){
+    public void onAdPreload(final Context context, final AdEntity adEntity, final IAdListener listener){
         if(null != listener){
             listener.onRequest(adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId);
         }
@@ -46,7 +46,7 @@ public class HwNative implements IAd {
                 globalNativeAd = nativeAd;
                 adEntity.ad = HwNative.this;
                 if(null != listener){
-                    listener.onResponse(true,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
+                    listener.onResponse(context,true,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
                 }
                 // Display native ad.
 //                showNativeAd(nativeAd);
@@ -57,7 +57,7 @@ public class HwNative implements IAd {
             public void onAdFailed(int errorCode) {
                 // Call this method when an ad fails to be loaded.
                 if(null != listener){
-                    listener.onResponse(false,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,null);
+                    listener.onResponse(context,false,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,null);
                 }
             }
 

@@ -57,6 +57,11 @@ public class AdConfig {
         return null;
     }
 
+    public int getAdProviderSize(int adPlaceHolder){
+        AdPlaceHolderConfig mAdPlaceHolderConfig= adPlaceHolderListMap.get(adPlaceHolder);
+        return null != mAdPlaceHolderConfig && null != mAdPlaceHolderConfig.adProviderList ? mAdPlaceHolderConfig.adProviderList.size() : 0;
+    }
+
     public int getRequestIndex(int adPlaceHolder){
         Integer index = adPlaceHolderRequestIndexMap.get(adPlaceHolder);
         if(null != index){

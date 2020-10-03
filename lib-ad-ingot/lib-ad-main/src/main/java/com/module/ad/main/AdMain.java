@@ -177,7 +177,7 @@ public class AdMain {
         }
 
         @Override
-        public void onResponse(boolean isSuccess, int adPlaceHolder, int adType, String adUnitId,AdEntity adEntity) {
+        public void onResponse(Context context,boolean isSuccess, int adPlaceHolder, int adType, String adUnitId,AdEntity adEntity) {
             Log.v(TAG,String.format("onResponse isSuccess=%b adPlaceHolder=%d adType=%d adUnitId=%s",isSuccess,adPlaceHolder,adType,adUnitId));
 
             if(isSuccess){
@@ -187,10 +187,22 @@ public class AdMain {
                     adObjectMap.put(adPlaceHolder,ret);
                 }
                 ret.add(adEntity);
+            }else{
+
+                int index = AdConfigMgr.getInstance().adConfig.getRequestIndex(adPlaceHolder);
+                int size = AdConfigMgr.getInstance().adConfig.getAdProviderSize(adPlaceHolder);
+                if(index < size-1){
+                    //转到下一个广告商
+                    AdConfigMgr.getInstance().adConfig.setRequestIndex(adPlaceHolder,index+1);
+                    preLoad(context,adPlaceHolder);
+                    return;
+                }else{
+                    AdConfigMgr.getInstance().adConfig.setRequestIndex(adPlaceHolder,0);
+                }
             }
 
             if(null != listener){
-                listener.onResponse(isSuccess,adPlaceHolder,adType,adUnitId,adEntity);
+                listener.onResponse(context,isSuccess,adPlaceHolder,adType,adUnitId,adEntity);
             }
         }
 

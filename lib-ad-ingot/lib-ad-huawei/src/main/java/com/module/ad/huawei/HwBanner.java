@@ -21,7 +21,7 @@ public class HwBanner implements IAd {
         HwAds.init(context);
     }
 
-    public void onAdPreload(Context context, final AdEntity adEntity, final IAdListener listener){
+    public void onAdPreload(final Context context, final AdEntity adEntity, final IAdListener listener){
         if(null != listener){
             listener.onRequest(adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId);
         }
@@ -36,14 +36,14 @@ public class HwBanner implements IAd {
                 // 广告获取成功调用
                 adEntity.ad = HwBanner.this;
                 if(null != listener){
-                    listener.onResponse(true,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
+                    listener.onResponse(context,true,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
                 }
             }
             @Override
             public void onAdFailed(int errorCode) {
                 // 广告获取失败时调用
                 if(null != listener){
-                    listener.onResponse(false,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,null);
+                    listener.onResponse(context,false,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,null);
                 }
             }
             @Override

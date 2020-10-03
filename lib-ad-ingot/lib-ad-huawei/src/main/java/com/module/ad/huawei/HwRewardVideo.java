@@ -26,7 +26,7 @@ public class HwRewardVideo implements IAd {
     }
 
     @Override
-    public void onAdPreload(Context context, final AdEntity adEntity, final IAdListener listener){
+    public void onAdPreload(final Context context, final AdEntity adEntity, final IAdListener listener){
         if(null != listener){
             listener.onRequest(adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId);
         }
@@ -38,14 +38,14 @@ public class HwRewardVideo implements IAd {
                 // 激励广告加载成功
                 adEntity.ad = HwRewardVideo.this;
                 if(null != listener){
-                    listener.onResponse(true,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
+                    listener.onResponse(context,true,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
                 }
             }
             @Override
             public void onRewardAdFailedToLoad(int errorCode) {
                 // 激励广告加载失败
                 if(null != listener){
-                    listener.onResponse(false,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,null);
+                    listener.onResponse(context,false,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,null);
                 }
             }
         };
