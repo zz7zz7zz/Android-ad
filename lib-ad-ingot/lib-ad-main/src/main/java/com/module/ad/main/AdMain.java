@@ -24,6 +24,7 @@ public class AdMain {
     private static AdMain INS;
     private HashMap<String, IAd> adMap = new HashMap<>();
     private HashMap<Integer,ArrayList<AdEntity>> adObjectMap = new HashMap();
+    private IAdListener listener;
 
     private AdMain() {
         init("google.admob");
@@ -72,7 +73,7 @@ public class AdMain {
         return ret;
     }
 
-    //----------------------- 加载 -----------------------
+    //----------------------- 1.加载 -----------------------
     public void preLoad(Context context,int adPlaceHolder){
         preLoad(context,adPlaceHolder,null);
     }
@@ -89,10 +90,10 @@ public class AdMain {
             return;
         }
 
-        ad.onAdPreload(context,new AdEntity(adPlaceHolder,adProvider),listener);
+        ad.onAdPreload(context,new AdEntity(adPlaceHolder,adProvider), proxyListener);
     }
 
-    //----------------------- 展示 -----------------------
+    //----------------------- 2.展示 -----------------------
     public void show(Context context,int adPlaceHolder,ViewGroup adViewParent){
         show(context,adPlaceHolder,null,adViewParent);
     }
@@ -116,7 +117,7 @@ public class AdMain {
 
         if(null != adEntity){
             adEntity.showAdPlaceHolder = adPlaceHolder;
-            adEntity.ad.onAdShow(context,adEntity,listener,adViewParent);
+            adEntity.ad.onAdShow(context,adEntity, proxyListener,adViewParent);
         }
     }
 
@@ -136,7 +137,7 @@ public class AdMain {
         return null;
     }
 
-    //----------------------- 判断是否存在 -----------------------
+    //----------------------- 3.判断是否存在 -----------------------
     public boolean isExist(int adPlaceHolder){
         return isExist(adPlaceHolder,null);
     }
@@ -159,41 +160,65 @@ public class AdMain {
         return false;
     }
 
-    //----------------------- 广告监听器 -----------------------
-    private IAdListener listener = new IAdListener(){
+    //----------------------- 4.设置监听器 -----------------------
+    public void setListener(IAdListener listener) {
+        this.listener = listener;
+    }
+
+    //----------------------- 内部广告监听器 -----------------------
+    private IAdListener proxyListener = new IAdListener(){
         @Override
         public void onRequest(int adPlaceHolder, int adType, String adUnitId) {
             Log.v(TAG,String.format("onRequest adPlaceHolder=%d adType=%d adUnitId=%s",adPlaceHolder,adType,adUnitId));
+
+            if(null != listener){
+                listener.onRequest(adPlaceHolder,adType,adUnitId);
+            }
         }
 
         @Override
         public void onResponse(boolean isSuccess, int adPlaceHolder, int adType, String adUnitId,AdEntity adEntity) {
             Log.v(TAG,String.format("onResponse isSuccess=%b adPlaceHolder=%d adType=%d adUnitId=%s",isSuccess,adPlaceHolder,adType,adUnitId));
-            if(!isSuccess){
-                return;
+
+            if(isSuccess){
+                ArrayList<AdEntity> ret = adObjectMap.get(adPlaceHolder);
+                if(null == ret){
+                    ret = new ArrayList<>();
+                    adObjectMap.put(adPlaceHolder,ret);
+                }
+                ret.add(adEntity);
             }
 
-            ArrayList<AdEntity> ret = adObjectMap.get(adPlaceHolder);
-            if(null == ret){
-                ret = new ArrayList<>();
-                adObjectMap.put(adPlaceHolder,ret);
+            if(null != listener){
+                listener.onResponse(isSuccess,adPlaceHolder,adType,adUnitId,adEntity);
             }
-            ret.add(adEntity);
         }
 
         @Override
         public void onImpression(int showAdPlaceHolder, int adPlaceHolder, int adType, String adUnitId) {
             Log.v(TAG,String.format("onImpression showAdPlaceHolder=%d adPlaceHolder=%d adType=%d adUnitId=%s",showAdPlaceHolder,adPlaceHolder,adType,adUnitId));
+
+            if(null != listener){
+                listener.onImpression(showAdPlaceHolder,adPlaceHolder,adType,adUnitId);
+            }
         }
 
         @Override
         public void onClick(int showAdPlaceHolder, int adPlaceHolder, int adType, String adUnitId) {
             Log.v(TAG,String.format("onClick showAdPlaceHolder=%d adPlaceHolder=%d adType=%d adUnitId=%s",showAdPlaceHolder,adPlaceHolder,adType,adUnitId));
+
+            if(null != listener){
+                listener.onClick(showAdPlaceHolder,adPlaceHolder,adType,adUnitId);
+            }
         }
 
         @Override
         public void onReward(int showAdPlaceHolder, int adPlaceHolder, int adType, String adUnitId) {
             Log.v(TAG,String.format("onReward showAdPlaceHolder=%d adPlaceHolder=%d adType=%d adUnitId=%s",showAdPlaceHolder,adPlaceHolder,adType,adUnitId));
+
+            if(null != listener){
+                listener.onReward(showAdPlaceHolder,adPlaceHolder,adType,adUnitId);
+            }
         }
     };
 
