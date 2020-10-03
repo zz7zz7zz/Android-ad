@@ -1,0 +1,66 @@
+{
+  "code" : "200",
+  "msg" : "ok",
+  "ver" : "1.0.0",
+  "adPlaceHolderList" : [ {
+    "adPlaceHolder" : "1",
+    "adFreqType" : 1,
+    "adFreq" : 10,
+    "adOffset" : 2,
+    "adBufferSize" : 1,
+    "adProviderList" : [ {
+      "adProviderName" : "huawei",
+      "adUnitId" : "testw6vs28auh3",
+      "adType" : "1",
+      "adTtl" : "3600",
+      "banner_size_width" : 360,
+      "banner_size_height" : 144,
+      "banner_refresh_freq" : 15
+    }, {
+      "adProviderName" : "huawei",
+      "adUnitId" : "testy63txaom86",
+      "adType" : "2",
+      "adTtl" : "3600"
+    }, {
+      "adProviderName" : "huawei",
+      "adUnitId" : "teste9ih9j0rc3",
+      "adType" : "3",
+      "adTtl" : "3600"
+    }, {
+      "adProviderName" : "huawei",
+      "adUnitId" : "testx9dtjwj8hp",
+      "adType" : "4",
+      "adTtl" : "3600"
+    }],
+    "adReuseList" : [ {
+      "adPlaceHolder" : "2",
+      "adProviderName" : "huawei",
+      "adType" : "1"
+    }, {
+      "adPlaceHolder" : "2",
+      "adProviderName" : "huawei",
+      "adType" : "1"
+    }]
+  }, {
+    "adPlaceHolder" : "2",
+    "adFreqType" : 2,
+    "adFreq" : 0,
+    "adOffset" : 60,
+    "adBufferSize" : 1,
+    "adProviderList" : [{
+      "adProviderName" : "huawei",
+      "adUnitId" : "testu7m3hc4gvm",
+      "adType" : "2",
+      "adTtl" : "3600"
+    }],
+    "adReuseList" : [ {
+      "adPlaceHolder" : "1",
+      "adProviderName" : "huawei",
+      "adType" : "1"
+    }, {
+      "adPlaceHolder" : "1",
+      "adProviderName" : "huawei",
+      "adType" : "2"
+    }]
+  }]
+}

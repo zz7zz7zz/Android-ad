@@ -23,25 +23,25 @@ public class HwInterstitial implements IAd {
     @Override
     public void onAdPreload(Context context, final AdEntity adEntity, final IAdListener listener) {
         if(null != listener){
-            listener.onRequest(adEntity.adPlaceHolder,adEntity.adType,adEntity.adUnitId);
+            listener.onRequest(adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId);
         }
 
         interstitialAd = new InterstitialAd(context);
-        interstitialAd.setAdId(adEntity.adUnitId);
+        interstitialAd.setAdId(adEntity.adProvider.adUnitId);
         interstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
                 // 广告获取成功调用
                 adEntity.ad = HwInterstitial.this;
                 if(null != listener){
-                    listener.onResponse(true,adEntity.adPlaceHolder,adEntity.adType,adEntity.adUnitId,adEntity);
+                    listener.onResponse(true,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
                 }
             }
             @Override
             public void onAdFailed(int errorCode) {
                 // 广告获取失败时调用
                 if(null != listener){
-                    listener.onResponse(false,adEntity.adPlaceHolder,adEntity.adType,adEntity.adUnitId,null);
+                    listener.onResponse(false,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,null);
                 }
             }
             @Override
@@ -52,7 +52,7 @@ public class HwInterstitial implements IAd {
             public void onAdClicked() {
                 // 广告点击时调用
                 if(null != listener){
-                    listener.onClick(adEntity.adPlaceHolder,adEntity.adType,adEntity.adUnitId);
+                    listener.onClick(adEntity.showAdPlaceHolder,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId);
                 }
             }
             @Override
@@ -82,7 +82,7 @@ public class HwInterstitial implements IAd {
             interstitialAd.show();
 
             if(null != listener){
-                listener.onImpression(adEntity.adPlaceHolder,adEntity.adType,adEntity.adUnitId);
+                listener.onImpression(adEntity.showAdPlaceHolder,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId);
             }
         }
     }

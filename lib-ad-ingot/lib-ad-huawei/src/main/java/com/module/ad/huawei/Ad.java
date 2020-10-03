@@ -20,13 +20,13 @@ public class Ad implements IAd {
     @Override
     public void onAdPreload(Context context, AdEntity adEntity, IAdListener listener) {
         Log.v("Ad","Huawei onAdPreload()");
-        if(adEntity.adType == AdType.TYPE_BANNER){
+        if(adEntity.adProvider.adType == AdType.TYPE_BANNER){
             new HwBanner().onAdPreload(context,adEntity,listener);
-        }else if(adEntity.adType == AdType.TYPE_NATIVE){
+        }else if(adEntity.adProvider.adType == AdType.TYPE_NATIVE){
             new HwNative().onAdPreload(context,adEntity,listener);
-        }else if(adEntity.adType == AdType.TYPE_INTERSTITIAL){
+        }else if(adEntity.adProvider.adType == AdType.TYPE_INTERSTITIAL){
             new HwInterstitial().onAdPreload(context,adEntity,listener);
-        }else if(adEntity.adType == AdType.TYPE_REWAED){
+        }else if(adEntity.adProvider.adType == AdType.TYPE_REWAED){
             new HwRewardVideo().onAdPreload(context,adEntity,listener);
         }
     }

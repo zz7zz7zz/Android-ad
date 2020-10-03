@@ -28,24 +28,24 @@ public class HwRewardVideo implements IAd {
     @Override
     public void onAdPreload(Context context, final AdEntity adEntity, final IAdListener listener){
         if(null != listener){
-            listener.onRequest(adEntity.adPlaceHolder,adEntity.adType,adEntity.adUnitId);
+            listener.onRequest(adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId);
         }
 
-        rewardAd = new RewardAd(context, adEntity.adUnitId);
+        rewardAd = new RewardAd(context, adEntity.adProvider.adUnitId);
         RewardAdLoadListener _listener= new RewardAdLoadListener() {
             @Override
             public void onRewardedLoaded() {
                 // 激励广告加载成功
                 adEntity.ad = HwRewardVideo.this;
                 if(null != listener){
-                    listener.onResponse(true,adEntity.adPlaceHolder,adEntity.adType,adEntity.adUnitId,adEntity);
+                    listener.onResponse(true,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
                 }
             }
             @Override
             public void onRewardAdFailedToLoad(int errorCode) {
                 // 激励广告加载失败
                 if(null != listener){
-                    listener.onResponse(false,adEntity.adPlaceHolder,adEntity.adType,adEntity.adUnitId,null);
+                    listener.onResponse(false,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,null);
                 }
             }
         };
@@ -73,13 +73,13 @@ public class HwRewardVideo implements IAd {
                     // 激励广告奖励达成
                     // TODO 发放奖励
                     if(null != listener){
-                        listener.onReward(adEntity.adPlaceHolder,adEntity.adType,adEntity.adUnitId);
+                        listener.onReward(adEntity.showAdPlaceHolder,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId);
                     }
                 }
             });
 
             if(null != listener){
-                listener.onImpression(adEntity.adPlaceHolder,adEntity.adType,adEntity.adUnitId);
+                listener.onImpression(adEntity.showAdPlaceHolder,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId);
             }
         }
     }

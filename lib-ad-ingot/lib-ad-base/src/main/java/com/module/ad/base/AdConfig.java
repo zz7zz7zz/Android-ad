@@ -1,13 +1,11 @@
-package com.module.ad.main;
+package com.module.ad.base;
 
 
-import android.content.Context;
-import android.content.res.AssetManager;
+import android.text.TextUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -25,15 +23,36 @@ public class AdConfig {
         return null != mAdPlaceHolderConfig && null != mAdPlaceHolderConfig.adProviderList && mAdPlaceHolderConfig.adProviderList.size() > 0 ;
     }
 
+    public AdPlaceHolderConfig getAdPlaceHolderConfig(int adPlaceHolder){
+        return adPlaceHolderListMap.get(adPlaceHolder);
+    }
+
     public AdProvider getRequestAdProvider(int adPlaceHolder){
+        return getRequestAdProvider(adPlaceHolder,null);
+    }
+
+    public AdProvider getRequestAdProvider(int adPlaceHolder, String adProviderName){
         AdPlaceHolderConfig mAdPlaceHolderConfig= adPlaceHolderListMap.get(adPlaceHolder);
         if(null != mAdPlaceHolderConfig && null != mAdPlaceHolderConfig.adProviderList && mAdPlaceHolderConfig.adProviderList.size() > 0){
-            int index = getRequestIndex(adPlaceHolder);
-            if(index < 0 && index >= mAdPlaceHolderConfig.adProviderList.size()){
-                index = 0;
-                setRequestIndex(adPlaceHolder,index);
+            int size = mAdPlaceHolderConfig.adProviderList.size();
+            for (int i = 0 ;i<size;i++){
+                int index = getRequestIndex(adPlaceHolder);
+                if(index < 0 && index >= size){
+                    index = 0;
+                }
+                index = (i+index)%size;
+
+                AdProvider adProvider = mAdPlaceHolderConfig.adProviderList.get(index);
+                if(!TextUtils.isEmpty(adProviderName)){
+                    if(adProviderName.equals(adProvider.adProviderName)){
+                        setRequestIndex(adPlaceHolder,index);
+                        return adProvider;
+                    }
+                }else{
+                    setRequestIndex(adPlaceHolder,index);
+                    return mAdPlaceHolderConfig.adProviderList.get(index);
+                }
             }
-            return mAdPlaceHolderConfig.adProviderList.get(index);
         }
         return null;
     }
@@ -63,29 +82,6 @@ public class AdConfig {
     }
 
     //------------------------------------------------------------------------------------
-    public static AdConfig getAdConfigFromAssert(final Context mContext){
-        AssetManager manager = mContext.getAssets();
-        InputStream is = null;
-        try {
-            is = manager.open("api_adconfig.json");
-            byte[] buffer = new byte[is.available()];
-            is.read(buffer);
-
-            return parse(new String(buffer, "utf-8"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            if(null != is){
-                try {
-                    is.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return null;
-    }
-
     public static AdConfig parse(String config){
         AdConfig ret = null;
         try {
@@ -118,6 +114,11 @@ public class AdConfig {
                                         adProvider.adUnitId         = adProviderJson.optString("adUnitId");
                                         adProvider.adType           = adProviderJson.optInt("adType");
                                         adProvider.adTtl            = adProviderJson.optInt("adTtl");
+
+                                        adProvider.banner_size_width  = adProviderJson.optInt("banner_size_width");
+                                        adProvider.banner_size_height = adProviderJson.optInt("banner_size_height");
+                                        adProvider.banner_refresh_freq= adProviderJson.optInt("banner_refresh_freq");
+
                                         adPlaceHolderConfig.adProviderList.add(adProvider);
                                     }
                                 }
@@ -131,7 +132,7 @@ public class AdConfig {
                                     JSONObject adReusePlaceHolderJson = adReuseOrderJA.optJSONObject(k);
                                     if(null != adReusePlaceHolderJson){
                                         AdReusePlaceHolder adReusePlaceHolder = new AdReusePlaceHolder();
-                                        adReusePlaceHolder.adPlaceHolder   = adReusePlaceHolderJson.optString("adPlaceHolder");
+                                        adReusePlaceHolder.adPlaceHolder   = adReusePlaceHolderJson.optInt("adPlaceHolder");
                                         adReusePlaceHolder.adProviderName  = adReusePlaceHolderJson.optString("adProviderName");
                                         adReusePlaceHolder.adType           = adReusePlaceHolderJson.optInt("adType");
                                         adPlaceHolderConfig.adReuseList.add(adReusePlaceHolder);
@@ -170,13 +171,13 @@ public class AdConfig {
 
         //华为banner属性才有的字段
         public int banner_size_width;
-        public int banner_size_Height;
+        public int banner_size_height;
         public int banner_refresh_freq;
 
     }
 
     public static final class AdReusePlaceHolder{
-        public String adPlaceHolder;
+        public int adPlaceHolder;
         public String adProviderName;
         public int adType;
     }

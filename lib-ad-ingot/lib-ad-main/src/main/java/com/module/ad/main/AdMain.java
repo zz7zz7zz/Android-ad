@@ -1,9 +1,11 @@
 package com.module.ad.main;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ViewGroup;
 
+import com.module.ad.base.AdConfig;
 import com.module.ad.base.AdEntity;
 import com.module.ad.base.IAd;
 import com.module.ad.base.IAdListener;
@@ -71,58 +73,102 @@ public class AdMain {
     }
 
     //----------------------- 加载 -----------------------
-    public void preLoad(int adPlaceHolder){
-
+    public void preLoad(Context context,int adPlaceHolder){
+        preLoad(context,adPlaceHolder,null);
     }
 
-    public void preLoad(Context context, int adPlaceHolder, String adProvider){
-        IAd ad = adMap.get(adProvider);
-        if(null != ad){
-            //ad.onAdPreload(adPlaceHolder,-1);
-
-            ad.onAdPreload(context,new AdEntity(adPlaceHolder,2,"testy63txaom86",360,144,10),listener);
+    public void preLoad(Context context, int adPlaceHolder, String adProviderName){
+        AdConfig adConfig = AdConfigMgr.getInstance().adConfig;
+        AdConfig.AdProvider adProvider = adConfig.getRequestAdProvider(adPlaceHolder,adProviderName);
+        if(null == adProvider){
+            return;
         }
+
+        IAd ad = adMap.get(adProvider.adProviderName);
+        if(null == ad){
+            return;
+        }
+
+        ad.onAdPreload(context,new AdEntity(adPlaceHolder,adProvider),listener);
     }
 
     //----------------------- 展示 -----------------------
-    public void show(int adPlaceHolder){
-
+    public void show(Context context,int adPlaceHolder,ViewGroup adViewParent){
+        show(context,adPlaceHolder,null,adViewParent);
     }
 
-    public void show(Context context, int adPlaceHolder, String adProvider, ViewGroup adViewParent){
-//        IAd ad = adMap.get(adProvider);
-//        if(null != ad){
-//           // ad.onAdShow(adPlaceHolder,-1);
-//            ad.onAdShow(context,adPlaceHolder,listener,1,"testw6vs28auh3",adViewParent);
-//        }
+    public void show(Context context, int adPlaceHolder, String adProviderName, ViewGroup adViewParent){
 
-        ArrayList<AdEntity> ret = adObjectMap.get(adPlaceHolder);
-        if(null != ret && ret.size() > 0){
-            AdEntity adEntity = ret.remove(0);
+        AdEntity adEntity = getShowAdEntity(adPlaceHolder,adProviderName);
+
+        if(null == adEntity){
+            AdConfig adConfig = AdConfigMgr.getInstance().adConfig;
+            AdConfig.AdPlaceHolderConfig adPlaceHolderConfig = adConfig.getAdPlaceHolderConfig(adPlaceHolder);
+            if(null != adPlaceHolderConfig && null != adPlaceHolderConfig.adReuseList){
+                for (int i = 0;i<adPlaceHolderConfig.adReuseList.size();i++){
+                    adEntity = getShowAdEntity(adPlaceHolderConfig.adReuseList.get(i).adPlaceHolder,adPlaceHolderConfig.adReuseList.get(i).adProviderName);
+                    if(null != adEntity){
+                        break;
+                    }
+                }
+            }
+        }
+
+        if(null != adEntity){
+            adEntity.showAdPlaceHolder = adPlaceHolder;
             adEntity.ad.onAdShow(context,adEntity,listener,adViewParent);
         }
     }
 
-    //----------------------- 判断是否存在 -----------------------
-    public void isExist(int adPlaceHolder){
+    private AdEntity getShowAdEntity(int adPlaceHolder, String adProviderName){
+        ArrayList<AdEntity> ret = adObjectMap.get(adPlaceHolder);
+        if(null != ret){
+            for (int i = 0;i<ret.size();i++){
+                if(!TextUtils.isEmpty(adProviderName)){
+                    if(adProviderName.equals(ret.get(i).adProvider.adProviderName)){
+                        return ret.remove(i);
+                    }
+                }else{
+                    return ret.remove(i);
+                }
+            }
+        }
+        return null;
+    }
 
+    //----------------------- 判断是否存在 -----------------------
+    public boolean isExist(int adPlaceHolder){
+        return isExist(adPlaceHolder,null);
     }
 
 
-    public void isExist(int adPlaceHolder,String adProvider){
+    public boolean isExist(int adPlaceHolder,String adProviderName){
+        ArrayList<AdEntity> ret = adObjectMap.get(adPlaceHolder);
+        if(null != ret){
+            for (int i = 0;i<ret.size();i++){
+                if(!TextUtils.isEmpty(adProviderName)){
+                    if(adProviderName.equals(ret.get(i).adProvider.adProviderName)){
+                        return true;
+                    }
+                }else{
+                    return true;
+                }
+            }
+        }
 
+        return false;
     }
 
     //----------------------- 广告监听器 -----------------------
     private IAdListener listener = new IAdListener(){
         @Override
         public void onRequest(int adPlaceHolder, int adType, String adUnitId) {
-            Log.v("Testing",String.format("onRequest adPlaceHolder=%d adType=%d adUnitId=%s",adPlaceHolder,adType,adUnitId));
+            Log.v(TAG,String.format("onRequest adPlaceHolder=%d adType=%d adUnitId=%s",adPlaceHolder,adType,adUnitId));
         }
 
         @Override
         public void onResponse(boolean isSuccess, int adPlaceHolder, int adType, String adUnitId,AdEntity adEntity) {
-            Log.v("Testing",String.format("onResponse isSuccess=%b adPlaceHolder=%d adType=%d adUnitId=%s",isSuccess,adPlaceHolder,adType,adUnitId));
+            Log.v(TAG,String.format("onResponse isSuccess=%b adPlaceHolder=%d adType=%d adUnitId=%s",isSuccess,adPlaceHolder,adType,adUnitId));
             if(!isSuccess){
                 return;
             }
@@ -136,18 +182,18 @@ public class AdMain {
         }
 
         @Override
-        public void onImpression(int adPlaceHolder, int adType, String adUnitId) {
-            Log.v("Testing",String.format("onImpression adPlaceHolder=%d adType=%d adUnitId=%s",adPlaceHolder,adType,adUnitId));
+        public void onImpression(int showAdPlaceHolder, int adPlaceHolder, int adType, String adUnitId) {
+            Log.v(TAG,String.format("onImpression showAdPlaceHolder=%d adPlaceHolder=%d adType=%d adUnitId=%s",showAdPlaceHolder,adPlaceHolder,adType,adUnitId));
         }
 
         @Override
-        public void onClick(int adPlaceHolder, int adType, String adUnitId) {
-            Log.v("Testing",String.format("onClick adPlaceHolder=%d adType=%d adUnitId=%s",adPlaceHolder,adType,adUnitId));
+        public void onClick(int showAdPlaceHolder, int adPlaceHolder, int adType, String adUnitId) {
+            Log.v(TAG,String.format("onClick showAdPlaceHolder=%d adPlaceHolder=%d adType=%d adUnitId=%s",showAdPlaceHolder,adPlaceHolder,adType,adUnitId));
         }
 
         @Override
-        public void onReward(int adPlaceHolder, int adType, String adUnitId) {
-            Log.v("Testing",String.format("onReward adPlaceHolder=%d adType=%d adUnitId=%s",adPlaceHolder,adType,adUnitId));
+        public void onReward(int showAdPlaceHolder, int adPlaceHolder, int adType, String adUnitId) {
+            Log.v(TAG,String.format("onReward showAdPlaceHolder=%d adPlaceHolder=%d adType=%d adUnitId=%s",showAdPlaceHolder,adPlaceHolder,adType,adUnitId));
         }
     };
 

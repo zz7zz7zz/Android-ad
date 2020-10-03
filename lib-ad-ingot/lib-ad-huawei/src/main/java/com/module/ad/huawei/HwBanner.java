@@ -23,27 +23,27 @@ public class HwBanner implements IAd {
 
     public void onAdPreload(Context context, final AdEntity adEntity, final IAdListener listener){
         if(null != listener){
-            listener.onRequest(adEntity.adPlaceHolder,adEntity.adType,adEntity.adUnitId);
+            listener.onRequest(adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId);
         }
 
         bannerView = new BannerView(context);
-        bannerView.setAdId(adEntity.adUnitId);
-        bannerView.setBannerAdSize(new BannerAdSize(adEntity.banner_size_width, adEntity.banner_size_Height));
-        bannerView.setBannerRefresh(adEntity.banner_refresh_freq);
+        bannerView.setAdId(adEntity.adProvider.adUnitId);
+        bannerView.setBannerAdSize(new BannerAdSize(adEntity.adProvider.banner_size_width, adEntity.adProvider.banner_size_height));
+        bannerView.setBannerRefresh(adEntity.adProvider.banner_refresh_freq);
         bannerView.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
                 // 广告获取成功调用
                 adEntity.ad = HwBanner.this;
                 if(null != listener){
-                    listener.onResponse(true,adEntity.adPlaceHolder,adEntity.adType,adEntity.adUnitId,adEntity);
+                    listener.onResponse(true,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
                 }
             }
             @Override
             public void onAdFailed(int errorCode) {
                 // 广告获取失败时调用
                 if(null != listener){
-                    listener.onResponse(false,adEntity.adPlaceHolder,adEntity.adType,adEntity.adUnitId,null);
+                    listener.onResponse(false,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,null);
                 }
             }
             @Override
@@ -54,7 +54,7 @@ public class HwBanner implements IAd {
             public void onAdClicked() {
                 // 广告点击时调用
                 if(null != listener){
-                    listener.onClick(adEntity.adPlaceHolder,adEntity.adType,adEntity.adUnitId);
+                    listener.onClick(adEntity.showAdPlaceHolder,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId);
                 }
             }
             @Override
@@ -79,7 +79,7 @@ public class HwBanner implements IAd {
             adViewParent.addView(bannerView);
 
             if(null != listener){
-                listener.onImpression(adEntity.adPlaceHolder,adEntity.adType,adEntity.adUnitId);
+                listener.onImpression(adEntity.showAdPlaceHolder,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId);
             }
         }
     }

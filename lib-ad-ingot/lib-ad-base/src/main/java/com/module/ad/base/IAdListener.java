@@ -6,9 +6,9 @@ public interface IAdListener {
 
     void onResponse(boolean isSuccess, int adPlaceHolder, int adType, String adUnitId,AdEntity adEntity);
 
-    void onImpression(int adPlaceHolder, int adType, String adUnitId);
+    void onImpression(int showAdPlaceHolder, int adPlaceHolder, int adType, String adUnitId);
 
-    void onClick(int adPlaceHolder, int adType, String adUnitId);
+    void onClick(int showAdPlaceHolder, int adPlaceHolder, int adType, String adUnitId);
 
-    void onReward(int adPlaceHolder, int adType, String adUnitId);
+    void onReward(int showAdPlaceHolder, int adPlaceHolder, int adType, String adUnitId);
 }
