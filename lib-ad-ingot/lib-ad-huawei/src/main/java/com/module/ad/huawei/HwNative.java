@@ -7,6 +7,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
+
 import com.huawei.hms.ads.AdListener;
 import com.huawei.hms.ads.AdParam;
 import com.huawei.hms.ads.HwAds;
@@ -21,7 +26,7 @@ import com.module.ad.base.AdEntity;
 import com.module.ad.base.IAd;
 import com.module.ad.base.IAdListener;
 
-public class HwNative implements IAd {
+public class HwNative implements IAd , LifecycleObserver {
 
     private NativeAd globalNativeAd;
 
@@ -108,6 +113,8 @@ public class HwNative implements IAd {
         // Add NativeView to the app UI.
         adViewParent.removeAllViews();
         adViewParent.addView(nativeView);
+
+        attach(context);
     }
 
     /**
@@ -166,4 +173,18 @@ public class HwNative implements IAd {
             // If there is a video, load a new native ad only after video playback is complete.
         }
     };
+
+    //------------------------------------------------------------------------
+    public void attach(Context mContext){
+        if(mContext instanceof FragmentActivity){
+            ((FragmentActivity)(mContext)).getLifecycle().addObserver(this);
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    public void onDestroy(){
+        if(null != globalNativeAd){
+            globalNativeAd.destroy();
+        }
+    }
 }
