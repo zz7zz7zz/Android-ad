@@ -16,8 +16,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        AdConfigMgr.getInstance().restore(this);
-
         findViewById(R.id.loadAd).setOnClickListener(this);
         findViewById(R.id.showAd).setOnClickListener(this);
     }
@@ -26,12 +24,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.loadAd:
-                AdMain.getInstance().preLoad(this,1);
+                AdMain.getInstance().preLoad(this,1,"onClick");
                 break;
 
             case R.id.showAd:
-//                AdMain.getInstance().show(this,1,(ViewGroup) findViewById(R.id.ad_parent));
-                AdMain.getInstance().show(this,1,null);
+                AdMain.getInstance().show(this,1,(ViewGroup) findViewById(R.id.ad_parent));
+//                AdMain.getInstance().show(this,1,null);
                 break;
         }
     }

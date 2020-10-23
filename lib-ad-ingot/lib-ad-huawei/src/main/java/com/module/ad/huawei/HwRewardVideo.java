@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.ViewGroup;
 
-import com.huawei.hms.ads.AdListener;
 import com.huawei.hms.ads.AdParam;
 import com.huawei.hms.ads.HwAds;
-import com.huawei.hms.ads.InterstitialAd;
 import com.huawei.hms.ads.reward.Reward;
 import com.huawei.hms.ads.reward.RewardAd;
 import com.huawei.hms.ads.reward.RewardAdLoadListener;
@@ -28,7 +26,7 @@ public class HwRewardVideo implements IAd {
     @Override
     public void onAdPreload(final Context context, final AdEntity adEntity, final IAdListener listener){
         if(null != listener){
-            listener.onRequest(adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId);
+            listener.onRequest(adEntity.scenario,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId);
         }
 
         rewardAd = new RewardAd(context, adEntity.adProvider.adUnitId);
@@ -38,14 +36,14 @@ public class HwRewardVideo implements IAd {
                 // 激励广告加载成功
                 adEntity.ad = HwRewardVideo.this;
                 if(null != listener){
-                    listener.onResponse(context,true,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
+                    listener.onResponse(context,true,adEntity.scenario,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
                 }
             }
             @Override
             public void onRewardAdFailedToLoad(int errorCode) {
                 // 激励广告加载失败
                 if(null != listener){
-                    listener.onResponse(context,false,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,null);
+                    listener.onResponse(context,false,adEntity.scenario,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,null);
                 }
             }
         };

@@ -1,10 +1,15 @@
 package com.module.ad.main;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.module.ad.base.AdConfig;
 import com.module.ad.base.AdEntity;
@@ -53,6 +58,11 @@ public class AdMain {
 
 
     //------------------------------------------------------------------------------------
+    public void init(Application application){
+        AdConfigMgr.getInstance().restore(application);
+        setActivityLifecycleCallbacks(application);
+    }
+
     private IAd init(String adProvider){
         IAd ret = adMap.get(adProvider);
         if(null == ret){
@@ -75,11 +85,11 @@ public class AdMain {
     }
 
     //----------------------- 1.加载 -----------------------
-    public void preLoad(Context context,int adPlaceHolder){
-        preLoad(context,adPlaceHolder,null);
+    public void preLoad(Context context,int adPlaceHolder,String scenario){
+        preLoad(context,adPlaceHolder,null,scenario);
     }
 
-    public void preLoad(Context context, int adPlaceHolder, String adProviderName){
+    public void preLoad(Context context, int adPlaceHolder, String adProviderName, String scenario){
         AdConfig adConfig = AdConfigMgr.getInstance().adConfig;
         AdConfig.AdProvider adProvider = adConfig.getRequestAdProvider(adPlaceHolder,adProviderName);
         if(null == adProvider){
@@ -91,7 +101,7 @@ public class AdMain {
             return;
         }
 
-        ad.onAdPreload(context,new AdEntity(adPlaceHolder,adProvider), proxyListener);
+        ad.onAdPreload(context,new AdEntity(scenario,adPlaceHolder,adProvider), proxyListener);
     }
 
     //----------------------- 2.展示 -----------------------
@@ -180,20 +190,60 @@ public class AdMain {
         this.listener = listener;
     }
 
+    //----------------------- 5.设置监听器 -----------------------
+    public void setActivityLifecycleCallbacks(Application application) {
+        application.registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+                AdPreloadEvent.onActivityCreated(activity.getApplicationContext(),activity.getClass().getSimpleName());
+            }
+
+            @Override
+            public void onActivityStarted(@NonNull Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityResumed(@NonNull Activity activity) {
+                AdPreloadEvent.onActivityResumed(activity.getApplicationContext(),activity.getClass().getSimpleName());
+            }
+
+            @Override
+            public void onActivityPaused(@NonNull Activity activity) {
+                AdPreloadEvent.onActivityPaused(activity.getApplicationContext(),activity.getClass().getSimpleName());
+            }
+
+            @Override
+            public void onActivityStopped(@NonNull Activity activity) {
+                AdPreloadEvent.onActivityStopped(activity.getApplicationContext(),activity.getClass().getSimpleName());
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(@NonNull Activity activity) {
+                AdPreloadEvent.onActivityDestroyed(activity.getApplicationContext(),activity.getClass().getSimpleName());
+            }
+        });
+    }
+
     //----------------------- 内部广告监听器 -----------------------
     private IAdListener proxyListener = new IAdListener(){
         @Override
-        public void onRequest(int adPlaceHolder, int adType, String adUnitId) {
-            Log.v(TAG,String.format("onRequest adPlaceHolder=%d adType=%d adUnitId=%s",adPlaceHolder,adType,adUnitId));
+        public void onRequest(String scenario, int adPlaceHolder, int adType, String adUnitId) {
+            Log.v(TAG,String.format("onRequest scenario=%s adPlaceHolder=%d adType=%d adUnitId=%s", scenario,adPlaceHolder,adType,adUnitId));
 
             if(null != listener){
-                listener.onRequest(adPlaceHolder,adType,adUnitId);
+                listener.onRequest(scenario,adPlaceHolder,adType,adUnitId);
             }
         }
 
         @Override
-        public void onResponse(Context context,boolean isSuccess, int adPlaceHolder, int adType, String adUnitId,AdEntity adEntity) {
-            Log.v(TAG,String.format("onResponse isSuccess=%b adPlaceHolder=%d adType=%d adUnitId=%s",isSuccess,adPlaceHolder,adType,adUnitId));
+        public void onResponse(Context context, boolean isSuccess, String scenario, int adPlaceHolder, int adType, String adUnitId, AdEntity adEntity) {
+            Log.v(TAG,String.format("onResponse isSuccess=%b scenario=%s adPlaceHolder=%d adType=%d adUnitId=%s",isSuccess, scenario,adPlaceHolder,adType,adUnitId));
 
             if(isSuccess){
                 ArrayList<AdEntity> ret = adObjectMap.get(adPlaceHolder);
@@ -209,7 +259,7 @@ public class AdMain {
                 if(index < size-1){
                     //转到下一个广告商
                     AdConfigMgr.getInstance().adConfig.setRequestIndex(adPlaceHolder,index+1);
-                    preLoad(context,adPlaceHolder);
+                    preLoad(context,adPlaceHolder, scenario);
                     return;
                 }else{
                     AdConfigMgr.getInstance().adConfig.setRequestIndex(adPlaceHolder,0);
@@ -217,7 +267,7 @@ public class AdMain {
             }
 
             if(null != listener){
-                listener.onResponse(context,isSuccess,adPlaceHolder,adType,adUnitId,adEntity);
+                listener.onResponse(context,isSuccess, scenario,adPlaceHolder,adType,adUnitId,adEntity);
             }
         }
 

@@ -62,5 +62,10 @@
       "adProviderName" : "huawei",
       "adType" : "2"
     }]
-  }]
+  }],
+  "preload": {
+    "Activity": [{"MainActivity_Created": [1]}],
+    "Fragment": [{"MainFragment_Created": [1]}],
+    "Event": [{"gameStart": [1]}]
+  }
 }

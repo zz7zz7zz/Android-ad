@@ -38,7 +38,7 @@ public class HwNative implements IAd , LifecycleObserver {
     @Override
     public void onAdPreload(final Context context, final AdEntity adEntity, final IAdListener listener){
         if(null != listener){
-            listener.onRequest(adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId);
+            listener.onRequest(adEntity.scenario,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId);
         }
 
         NativeAdLoader.Builder builder = new NativeAdLoader.Builder(context, adEntity.adProvider.adUnitId);
@@ -51,7 +51,7 @@ public class HwNative implements IAd , LifecycleObserver {
                 globalNativeAd = nativeAd;
                 adEntity.ad = HwNative.this;
                 if(null != listener){
-                    listener.onResponse(context,true,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
+                    listener.onResponse(context,true,adEntity.scenario,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
                 }
                 // Display native ad.
 //                showNativeAd(nativeAd);
@@ -62,7 +62,7 @@ public class HwNative implements IAd , LifecycleObserver {
             public void onAdFailed(int errorCode) {
                 // Call this method when an ad fails to be loaded.
                 if(null != listener){
-                    listener.onResponse(context,false,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,null);
+                    listener.onResponse(context,false,adEntity.scenario,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,null);
                 }
             }
 
