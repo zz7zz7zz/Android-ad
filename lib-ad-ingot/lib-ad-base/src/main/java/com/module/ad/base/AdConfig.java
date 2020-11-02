@@ -235,7 +235,11 @@ public class AdConfig {
 
     //------------------------------------------------------------------------------------
     public static final class AdPlaceHolderConfig{
-        public int adFreqType;
+
+        public static final int AD_FREQ_TYPE_COUNT = 1;
+        public static final int AD_FREQ_TYPE_SECOND = 2;
+
+        public int adFreqType;//1，按次数；2，按时间
         public int adFreq;
         public int adOffset;
         public int adBufferSize;

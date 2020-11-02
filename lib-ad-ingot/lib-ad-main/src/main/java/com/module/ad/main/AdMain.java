@@ -86,22 +86,53 @@ public class AdMain {
 
     //----------------------- 1.加载 -----------------------
     public void preLoad(Context context,int adPlaceHolder,String scenario){
-        preLoad(context,adPlaceHolder,null,scenario);
+        int retCode = preLoad(context,adPlaceHolder,null,scenario,false);
+        Log.v(TAG,"preLoad retCode " + retCode);
     }
 
-    public void preLoad(Context context, int adPlaceHolder, String adProviderName, String scenario){
+    public void forcePreLoad(Context context,int adPlaceHolder,String scenario){
+        int retCode = preLoad(context,adPlaceHolder,null,scenario,true);
+        Log.v(TAG,"preLoad retCode " + retCode);
+    }
+
+    public int preLoad(Context context, int adPlaceHolder, String adProviderName, String scenario,boolean force){
         AdConfig adConfig = AdConfigMgr.getInstance().adConfig;
+
+        if(!force){
+            AdConfig.AdPlaceHolderConfig adPlaceHolderConfig = adConfig.getAdPlaceHolderConfig(adPlaceHolder);
+            String fileName = "ad_ingot";
+            String key = String.format("placeholder_%d_adFreqType_%d",adPlaceHolder,adPlaceHolderConfig.adFreqType);
+            if(adPlaceHolderConfig.adFreqType == AdConfig.AdPlaceHolderConfig.AD_FREQ_TYPE_COUNT){
+                long value = AdSharePreUtil.getLong(context,fileName,key) + 1;
+                AdSharePreUtil.asynPutLong(context,fileName,key,value);
+
+                if(!(value == adPlaceHolderConfig.adOffset || (value - adPlaceHolderConfig.adOffset) % adPlaceHolderConfig.adFreq == 0)){
+                    return -11;
+                }
+            }else if(adPlaceHolderConfig.adFreqType == AdConfig.AdPlaceHolderConfig.AD_FREQ_TYPE_SECOND){
+                long old = AdSharePreUtil.getLong(context,fileName,key);
+                long now = System.currentTimeMillis();
+                if(now > (old + adPlaceHolderConfig.adFreq)){
+                    AdSharePreUtil.asynPutLong(context,fileName,key,now);
+                }else{
+                    return -12;
+                }
+            }
+        }
+
         AdConfig.AdProvider adProvider = adConfig.getRequestAdProvider(adPlaceHolder,adProviderName);
         if(null == adProvider){
-            return;
+            return -2;
         }
 
         IAd ad = adMap.get(adProvider.adProviderName);
         if(null == ad){
-            return;
+            return -3;
         }
 
         ad.onAdPreload(context,new AdEntity(scenario,adPlaceHolder,adProvider), proxyListener);
+
+        return 0;
     }
 
     //----------------------- 2.展示 -----------------------
