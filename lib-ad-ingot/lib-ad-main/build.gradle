@@ -1,5 +1,23 @@
 apply plugin: 'com.android.library'
 
+apply from: 'ad_ingot_modules.gradle'
+
+static String getModuleNames(libs) {
+    StringBuilder stringBuilder = new StringBuilder()
+    libs = libs as String[]
+    stringBuilder.append("{")
+    for (int i = 0; i < libs.length; i++) {
+        stringBuilder.append("\"")
+        stringBuilder.append(libs[i])
+        stringBuilder.append("\"")
+        if (i != libs.length - 1) {
+            stringBuilder.append(",")
+        }
+    }
+    stringBuilder.append("}")
+    return stringBuilder.toString()
+}
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
@@ -12,6 +30,10 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
+
+        //代码需要用到
+        def libs = libs.get("ad_ingot_dep_modules")
+        buildConfigField "String[]" , "ad_ingot_dep_modules", getModuleNames(libs)
     }
 
     buildTypes {
@@ -31,6 +53,23 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation project(path: ':lib-ad-ingot:lib-ad-base')
-    implementation project(path: ':lib-ad-ingot:lib-ad-google-admob')
-    implementation project(path: ':lib-ad-ingot:lib-ad-huawei')
+
+    //1.写死依赖
+//    implementation project(path: ':lib-ad-ingot:lib-ad-google-admob')
+//    implementation project(path: ':lib-ad-ingot:lib-ad-huawei')
+
+    //2.动弹依赖
+    def ad_ingot_dep_modules = libs.get("ad_ingot_dep_modules")
+    for (String moduleName in ad_ingot_dep_modules) {
+
+        println("moduleName                " + moduleName)
+
+        if(moduleName == 'google.admob'){
+            implementation project(path: ':lib-ad-ingot:lib-ad-google-admob')
+        }
+
+        if(moduleName == 'huawei'){
+            implementation project(path: ':lib-ad-ingot:lib-ad-huawei')
+        }
+    }
 }

@@ -33,8 +33,16 @@ public class AdMain {
     private IAdListener listener;
 
     private AdMain() {
-        init("google.admob");
-        init("huawei");
+        //1.写死初始化
+//        init("google.admob");
+//        init("huawei");
+
+        //2.根据配置动态初始化
+        String[] ad_ingot_dep_modules = BuildConfig.ad_ingot_dep_modules;
+        for (String moduleName:ad_ingot_dep_modules) {
+            Log.v(TAG,"AdMain() init moduleName " + moduleName);
+            init(moduleName);
+        }
     }
 
     public static AdMain getInstance() {

@@ -1,0 +1,5 @@
+ext {
+    libs = [
+            ad_ingot_dep_modules: ['google.admob','huawei'],
+    ]
+}
