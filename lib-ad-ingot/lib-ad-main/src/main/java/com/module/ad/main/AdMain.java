@@ -112,7 +112,7 @@ public class AdMain {
             }else if(adPlaceHolderConfig.adFreqType == AdConfig.AdPlaceHolderConfig.AD_FREQ_TYPE_SECOND){
                 long old = AdSharePreUtil.getLong(context,fileName,key);
                 long now = System.currentTimeMillis();
-                if(now > (old + adPlaceHolderConfig.adFreq)){
+                if((old == 0 && now > adPlaceHolderConfig.adOffset) || now > (old + adPlaceHolderConfig.adFreq * 1000)){
                     AdSharePreUtil.asynPutLong(context,fileName,key,now);
                 }else{
                     return -12;
