@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.module.ad.main.AdConfigMgr;
 import com.module.ad.main.AdMain;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -28,8 +27,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.showAd:
-                AdMain.getInstance().show(this,1,(ViewGroup) findViewById(R.id.ad_parent));
-//                AdMain.getInstance().show(this,1,null);
+                AdMain.getInstance().show(this,1,(ViewGroup) findViewById(R.id.ad_parent),null);
+//                AdMain.getInstance().show(this, 1, null, 10000, new OnAdShowResultListener() {
+//                    @Override
+//                    public void onSuccess() {
+//                        Log.v("MainActivity","show onSuccess");
+//                    }
+//
+//                    @Override
+//                    public void onFailed() {
+//                        Log.v("MainActivity","show onFailed");
+//                    }
+//                });
                 break;
         }
     }

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -13,9 +15,11 @@ import androidx.annotation.Nullable;
 
 import com.module.ad.base.AdConfig;
 import com.module.ad.base.AdEntity;
+import com.module.ad.base.AdType;
 import com.module.ad.base.IAd;
 import com.module.ad.base.IAdListener;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -31,6 +35,58 @@ public class AdMain {
     private HashMap<String, IAd> adMap = new HashMap<>();
     private HashMap<Integer,ArrayList<AdEntity>> adObjectMap = new HashMap();
     private IAdListener listener;
+
+    private static final int MSG_WAIT_SHOW_AD = 1;
+    private ArrayList<AdShowTask> adShowTaskArrayList = new ArrayList<>();
+    private AdHandler  mHandler = new AdHandler(this);
+
+    private static final class AdShowTask {
+        public Context context;
+        public int adPlaceHolder;
+        public String adProviderName;
+        public ViewGroup adViewParent;
+        public long timeOutMillis;
+        public OnAdShowResultListener listener;
+
+        public AdShowTask(Context context, int adPlaceHolder, String adProviderName, ViewGroup adViewParent, long timeOutMillis, OnAdShowResultListener listener) {
+            this.context = context;
+            this.adPlaceHolder = adPlaceHolder;
+            this.adProviderName = adProviderName;
+            this.adViewParent = adViewParent;
+            this.timeOutMillis = timeOutMillis;
+            this.listener = listener;
+        }
+    }
+
+    private static final class AdHandler extends Handler{
+        private WeakReference<AdMain> adMainWeakReference;
+
+        public AdHandler(AdMain adMain) {
+            this.adMainWeakReference = new WeakReference<>(adMain);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            AdMain adMain = adMainWeakReference.get();
+            if (null == adMain) {
+                return;
+            }
+
+            switch (msg.what) {
+                case MSG_WAIT_SHOW_AD:
+                    AdShowTask obj = (AdShowTask) msg.obj;
+                    adMain.show(obj.context,obj.adPlaceHolder,obj.adProviderName,obj.adViewParent,-1,obj.listener);
+
+                    adMain.adShowTaskArrayList.remove(obj);
+
+                    //Log.v(TAG,"end wating to show handleMessage");
+                    break;
+            }
+        }
+    };
+
 
     private AdMain() {
         //1.写死初始化
@@ -100,7 +156,7 @@ public class AdMain {
 
     public void forcePreLoad(Context context,int adPlaceHolder,String scenario){
         int retCode = preLoad(context,adPlaceHolder,null,scenario,true);
-        Log.v(TAG,"preLoad retCode " + retCode);
+        Log.v(TAG,"forcePreLoad retCode " + retCode);
     }
 
     public int preLoad(Context context, int adPlaceHolder, String adProviderName, String scenario,boolean force){
@@ -144,11 +200,18 @@ public class AdMain {
     }
 
     //----------------------- 2.展示 -----------------------
-    public void show(Context context,int adPlaceHolder,ViewGroup adViewParent){
-        show(context,adPlaceHolder,null,adViewParent);
+    public void show(Context context,int adPlaceHolder,ViewGroup adViewParent, OnAdShowResultListener listener){
+        show(context,adPlaceHolder,null,adViewParent,-1,listener);
     }
 
-    public void show(final Context context, final int adPlaceHolder, final String adProviderName, ViewGroup adViewParent){
+    public void show(Context context,int adPlaceHolder,ViewGroup adViewParent,long timeOutMillis, OnAdShowResultListener listener){
+        show(context,adPlaceHolder,null,adViewParent,timeOutMillis,listener);
+    }
+
+    public void show(final Context context, final int adPlaceHolder, final String adProviderName, final ViewGroup adViewParent, long timeOutMillis, OnAdShowResultListener listener){
+        if(context instanceof Activity && ((Activity)context).isFinishing()){
+            return;
+        }
 
         AdEntity adEntity = getShowAdEntity(adPlaceHolder,adProviderName);
 
@@ -168,7 +231,7 @@ public class AdMain {
         if(null != adEntity){
             adEntity.showAdPlaceHolder = adPlaceHolder;
             //如果想展示Banner/Native又没有父布局，则通过对话框模拟插屏进行展示
-            if(context instanceof Activity && null == adViewParent && (adEntity.adProvider.adType == 1 || adEntity.adProvider.adType == 2)){
+            if(context instanceof Activity && null == adViewParent && (adEntity.adProvider.adType == AdType.TYPE_BANNER || adEntity.adProvider.adType == AdType.TYPE_NATIVE)){
                 final AdEntity finalAdEntity = adEntity;
                 AdDialog.show((Activity) context, new AdDialog.IAdDialogListener() {
                     @Override
@@ -181,6 +244,39 @@ public class AdMain {
                 });
             }else{
                 adEntity.ad.onAdShow(context,adEntity, proxyListener,adViewParent);
+            }
+
+            if(null != listener){
+                listener.onSuccess();
+            }
+        }else{
+
+            //最多等待多少秒再Check一次（timeOutMillis设置为-1了）
+            if(timeOutMillis > 0){
+//                Runnable delayShowRunnable = new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        show(context,adPlaceHolder,adProviderName,adViewParent,-1);
+//                    }
+//                };
+//                mHandler.postDelayed(delayShowRunnable,timeOutMillis);
+
+                AdShowTask obj = new AdShowTask(context, adPlaceHolder, adProviderName, adViewParent, timeOutMillis,listener);
+
+                Message msg = mHandler.obtainMessage();
+                msg.what = MSG_WAIT_SHOW_AD;
+                msg.obj = obj;
+                mHandler.sendMessageDelayed(msg,timeOutMillis);
+
+                adShowTaskArrayList.add(obj);
+
+                //Log.v(TAG,"start wating to show sendMessage");
+                forcePreLoad(context, adPlaceHolder,"show_not_ad_preload");
+                return;
+            }
+
+            if(null != listener){
+                listener.onFailed();
             }
         }
     }
@@ -298,7 +394,7 @@ public class AdMain {
                 if(index < size-1){
                     //转到下一个广告商
                     AdConfigMgr.getInstance().adConfig.setRequestIndex(adPlaceHolder,index+1);
-                    preLoad(context,adPlaceHolder, scenario);
+                    forcePreLoad(context,adPlaceHolder, scenario);
                     return;
                 }else{
                     AdConfigMgr.getInstance().adConfig.setRequestIndex(adPlaceHolder,0);
@@ -307,6 +403,19 @@ public class AdMain {
 
             if(null != listener){
                 listener.onResponse(context,isSuccess, scenario,adPlaceHolder,adType,adUnitId,adEntity);
+            }
+
+            //有消息都情况下，有没有广告都要回调一下；有广告则展示广告，没有广告可以做其它的事情(比如在对话框中展示广告可以关闭对话框，Toast提示等)
+            for (int i = 0; i < adShowTaskArrayList.size(); i++) {
+                if(adShowTaskArrayList.get(i).adPlaceHolder == adPlaceHolder){
+                    AdShowTask obj = adShowTaskArrayList.remove(i);
+
+                    mHandler.removeMessages(MSG_WAIT_SHOW_AD,obj);
+                    show(obj.context,obj.adPlaceHolder,obj.adProviderName,obj.adViewParent,-1,obj.listener);
+
+                    //Log.v(TAG,"end wating to show onResponse");
+                    break;
+                }
             }
         }
 
