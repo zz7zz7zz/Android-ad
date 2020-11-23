@@ -34,7 +34,7 @@ public class AdShowEvent {
         int[] adPlaceHolderArray = AdConfigMgr.getInstance().adConfig.show_map_activity.get(key);
         if(null != adPlaceHolderArray && adPlaceHolderArray.length>0){
             for (int i=0;i<adPlaceHolderArray.length;i++){
-                AdMain.getInstance().show(context,adPlaceHolderArray[i],null,null);
+                AdMain.getInstance().show(AdMain.getInstance().getCurrentActivity(),adPlaceHolderArray[i],null,null);
             }
         }
     }
@@ -69,7 +69,7 @@ public class AdShowEvent {
         int[] adPlaceHolderArray = AdConfigMgr.getInstance().adConfig.show_map_fragment.get(key);
         if(null != adPlaceHolderArray && adPlaceHolderArray.length>0){
             for (int i=0;i<adPlaceHolderArray.length;i++){
-                AdMain.getInstance().show(context,adPlaceHolderArray[i],null,null);
+                AdMain.getInstance().show(AdMain.getInstance().getCurrentActivity(),adPlaceHolderArray[i],null,null);
             }
         }
     }
@@ -78,7 +78,7 @@ public class AdShowEvent {
         int[] adPlaceHolderArray = AdConfigMgr.getInstance().adConfig.show_map_event.get(event);
         if(null != adPlaceHolderArray && adPlaceHolderArray.length>0){
             for (int i=0;i<adPlaceHolderArray.length;i++){
-                AdMain.getInstance().show(context,adPlaceHolderArray[i],null,null);
+                AdMain.getInstance().show(AdMain.getInstance().getCurrentActivity(),adPlaceHolderArray[i],null,null);
             }
         }
     }

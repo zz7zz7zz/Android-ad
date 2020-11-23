@@ -69,8 +69,8 @@
     "Event": [{"gameStart": [1]}]
   },
   "show": {
-    "Activity": [{"MainActivity_Created": [1]}],
-    "Fragment": [{"MainFragment_Created": [1]}],
-    "Event": [{"gameStart": [1]}]
+    "Activity": [{"MainActivity_Resumed": [1]}],
+    "Fragment": [{"MainFragment_Resumed": [1]}],
+    "Event": [{"gameEnd": [1]}]
   }
 }

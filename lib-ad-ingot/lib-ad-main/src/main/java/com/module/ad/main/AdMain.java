@@ -31,6 +31,9 @@ public class AdMain {
     private static String TAG = "AdMain";
 
     //------------------------------------------------------------------------------------
+    private WeakReference<Activity> mCurrentActivity;
+
+    //------------------------------------------------------------------------------------
     private static AdMain INS;
     private HashMap<String, IAd> adMap = new HashMap<>();
     private HashMap<Integer,ArrayList<AdEntity>> adObjectMap = new HashMap();
@@ -345,6 +348,11 @@ public class AdMain {
             @Override
             public void onActivityResumed(@NonNull Activity activity) {
 
+                // 更新当前的Activity
+                if(activity != getCurrentUnfinishedActivity()){
+                    mCurrentActivity = new WeakReference<>(activity);
+                }
+
                 AdPreloadEvent.onActivityResumed(activity.getApplicationContext(),activity.getClass().getSimpleName());
 
                 AdShowEvent.onActivityResumed(activity.getApplicationContext(),activity.getClass().getSimpleName());
@@ -381,8 +389,29 @@ public class AdMain {
 
                 AdShowEvent.onActivityDestroyed(activity.getApplicationContext(),activity.getClass().getSimpleName());
 
+                // 返回键退出应用时调用
+//                if (activity instanceof MainActivity) {
+//                    mCurrentActivity = null;
+//                }
+
             }
         });
+    }
+
+    //获取当前未退出的Activity实例
+    private Activity getCurrentUnfinishedActivity(){
+        Activity ret = null;
+        if(null != mCurrentActivity){
+            ret = mCurrentActivity.get();
+        }
+        if(null != ret && ret.isFinishing()){
+            ret = null;
+        }
+        return ret;
+    }
+
+    public Activity getCurrentActivity() {
+        return  null == mCurrentActivity ? null : mCurrentActivity.get();
     }
 
     //----------------------- 内部广告监听器 -----------------------
