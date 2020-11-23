@@ -67,5 +67,10 @@
     "Activity": [{"MainActivity_Created": [1]}],
     "Fragment": [{"MainFragment_Created": [1]}],
     "Event": [{"gameStart": [1]}]
+  },
+  "show": {
+    "Activity": [{"MainActivity_Created": [1]}],
+    "Fragment": [{"MainFragment_Created": [1]}],
+    "Event": [{"gameStart": [1]}]
   }
 }

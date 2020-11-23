@@ -22,7 +22,12 @@ public class AdConfig {
     //------------------------------------------------------------------------------------
     public HashMap<String,int[]> preload_map_activity = new HashMap<>();
     public HashMap<String,int[]> preload_map_fragment = new HashMap<>();
-    public HashMap<String,int[]> preload_map_event = new HashMap<>();
+    public HashMap<String,int[]> preload_map_event    = new HashMap<>();
+
+    //------------------------------------------------------------------------------------
+    public HashMap<String,int[]> show_map_activity = new HashMap<>();
+    public HashMap<String,int[]> show_map_fragment = new HashMap<>();
+    public HashMap<String,int[]> show_map_event    = new HashMap<>();
 
     public boolean isEnable(int adPlaceHolder){
         AdPlaceHolderConfig mAdPlaceHolderConfig= adPlaceHolderListMap.get(adPlaceHolder);
@@ -227,6 +232,73 @@ public class AdConfig {
                 }
             }
 
+            //-------------------------解析展示时机-------------------------------
+            JSONObject showJA =configJson.optJSONObject("show");
+            if(null != showJA){
+                JSONArray show_map_activity_ja = showJA.optJSONArray("Activity");
+                length = null != show_map_activity_ja ? show_map_activity_ja.length() : 0;
+                if(length > 0){
+                    for (int i = 0; i<length; i++){
+                        Iterator<String> keys = show_map_activity_ja.optJSONObject(i).keys();
+                        while (keys.hasNext()) {
+                            String activity_event = keys.next();
+                            JSONArray activity_event_adPlaceHolder_ja = show_map_activity_ja.optJSONObject(i).optJSONArray(activity_event);
+                            int length2 = null != activity_event_adPlaceHolder_ja ? activity_event_adPlaceHolder_ja.length() : 0;
+                            if(length2 > 0){
+                                int[] activity_event_ad_place_holder_array=new int[length2];
+                                for (int j = 0; j<length2; j++){
+                                    activity_event_ad_place_holder_array[j]=activity_event_adPlaceHolder_ja.optInt(j);
+                                }
+
+                                ret.show_map_activity.put(activity_event,activity_event_ad_place_holder_array);
+                            }
+                        }
+                    }
+                }
+
+                JSONArray show_map_fragment_ja = showJA.optJSONArray("Fragment");
+                length = null != show_map_fragment_ja ? show_map_fragment_ja.length() : 0;
+                if(length > 0){
+                    for (int i = 0; i<length; i++){
+                        Iterator<String> keys = show_map_fragment_ja.optJSONObject(i).keys();
+                        while (keys.hasNext()) {
+                            String fragment_event = keys.next();
+                            JSONArray fragment_event_adPlaceHolder_ja = show_map_fragment_ja.optJSONObject(i).optJSONArray(fragment_event);
+                            int length2 = null != fragment_event_adPlaceHolder_ja ? fragment_event_adPlaceHolder_ja.length() : 0;
+                            if(length2 > 0){
+                                int[] fragment_event_ad_place_holder_array=new int[length2];
+                                for (int j = 0; j<length2; j++){
+                                    fragment_event_ad_place_holder_array[j]=fragment_event_adPlaceHolder_ja.optInt(j);
+                                }
+
+                                ret.show_map_fragment.put(fragment_event,fragment_event_ad_place_holder_array);
+                            }
+                        }
+                    }
+                }
+
+                JSONArray show_map_event_ja = showJA.optJSONArray("Event");
+                length = null != show_map_event_ja ? show_map_event_ja.length() : 0;
+                if(length > 0){
+                    for (int i = 0; i<length; i++){
+                        Iterator<String> keys = show_map_event_ja.optJSONObject(i).keys();
+                        while (keys.hasNext()) {
+                            String event = keys.next();
+
+                            JSONArray event_adPlaceHolder_ja = show_map_event_ja.optJSONObject(i).optJSONArray(event);
+                            int length2 = null != event_adPlaceHolder_ja ? event_adPlaceHolder_ja.length() : 0;
+                            if(length2 > 0){
+                                int[] event_ad_place_holder_array=new int[length2];
+                                for (int j = 0; j<length2; j++){
+                                    event_ad_place_holder_array[j]=event_adPlaceHolder_ja.optInt(j);
+                                }
+
+                                ret.show_map_event.put(event,event_ad_place_holder_array);
+                            }
+                        }
+                    }
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

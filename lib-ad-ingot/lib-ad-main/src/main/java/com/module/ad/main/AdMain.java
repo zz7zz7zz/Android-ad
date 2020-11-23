@@ -330,7 +330,11 @@ public class AdMain {
         application.registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+
                 AdPreloadEvent.onActivityCreated(activity.getApplicationContext(),activity.getClass().getSimpleName());
+
+                AdShowEvent.onActivityCreated(activity.getApplicationContext(),activity.getClass().getSimpleName());
+
             }
 
             @Override
@@ -340,17 +344,29 @@ public class AdMain {
 
             @Override
             public void onActivityResumed(@NonNull Activity activity) {
+
                 AdPreloadEvent.onActivityResumed(activity.getApplicationContext(),activity.getClass().getSimpleName());
+
+                AdShowEvent.onActivityResumed(activity.getApplicationContext(),activity.getClass().getSimpleName());
+
             }
 
             @Override
             public void onActivityPaused(@NonNull Activity activity) {
+
                 AdPreloadEvent.onActivityPaused(activity.getApplicationContext(),activity.getClass().getSimpleName());
+
+                AdShowEvent.onActivityPaused(activity.getApplicationContext(),activity.getClass().getSimpleName());
+
             }
 
             @Override
             public void onActivityStopped(@NonNull Activity activity) {
+
                 AdPreloadEvent.onActivityStopped(activity.getApplicationContext(),activity.getClass().getSimpleName());
+
+                AdShowEvent.onActivityStopped(activity.getApplicationContext(),activity.getClass().getSimpleName());
+
             }
 
             @Override
@@ -360,7 +376,11 @@ public class AdMain {
 
             @Override
             public void onActivityDestroyed(@NonNull Activity activity) {
+
                 AdPreloadEvent.onActivityDestroyed(activity.getApplicationContext(),activity.getClass().getSimpleName());
+
+                AdShowEvent.onActivityDestroyed(activity.getApplicationContext(),activity.getClass().getSimpleName());
+
             }
         });
     }
