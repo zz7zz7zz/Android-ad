@@ -394,6 +394,9 @@ public class AdMain {
 //                    mCurrentActivity = null;
 //                }
 
+                if(activity == getCurrentActivity()){
+                    mCurrentActivity = null;
+                }
             }
         });
     }
