@@ -71,7 +71,7 @@ public class AdConfigMgr {
         AssetManager manager = mContext.getAssets();
         InputStream is = null;
         try {
-            is = manager.open("api_resp_adconfig.json");
+            is = manager.open("ad_config.json");
             byte[] buffer = new byte[is.available()];
             is.read(buffer);
 
