@@ -22,6 +22,7 @@ import com.module.ad.base.IAdListener;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
     广告统一入口
@@ -128,6 +129,8 @@ public class AdMain {
     public void init(Application application){
         AdConfigMgr.getInstance().restore(application);
         setActivityLifecycleCallbacks(application);
+
+        initSDK(application);
     }
 
     private IAd init(String adProvider){
@@ -149,6 +152,13 @@ public class AdMain {
     private IAd get(String adProvider){
         IAd ret = adMap.get(adProvider);
         return ret;
+    }
+
+    private void initSDK(Context context){
+        //初始化SDK
+        for (Map.Entry<String, IAd> entry : adMap.entrySet()) {
+            entry.getValue().onInit(context);
+        }
     }
 
     //----------------------- 1.加载 -----------------------

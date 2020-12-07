@@ -57,6 +57,9 @@ public class HwRewardVideo implements IAd {
                 @Override
                 public void onRewardAdOpened() {
                     // 激励广告被打开
+                    if(null != listener){
+                        listener.onImpression(adEntity.showAdPlaceHolder,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId);
+                    }
                 }
                 @Override
                 public void onRewardAdFailedToShow(int errorCode) {
@@ -75,10 +78,6 @@ public class HwRewardVideo implements IAd {
                     }
                 }
             });
-
-            if(null != listener){
-                listener.onImpression(adEntity.showAdPlaceHolder,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId);
-            }
         }
     }
 }

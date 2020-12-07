@@ -1,2 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.module.ad.google.admob" />
+    package="com.module.ad.google.admob" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application  android:hardwareAccelerated="true">
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_appId"/>
+    </application>
+</manifest>
