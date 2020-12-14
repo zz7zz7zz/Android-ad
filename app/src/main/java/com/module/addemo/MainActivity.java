@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.showAd:
-                AdMain.getInstance().show(this,1,null,null);
+                AdMain.getInstance().show(this,1,(ViewGroup) findViewById(R.id.ad_parent),null);
 //                AdMain.getInstance().show(this, 1, null, 10000, new OnAdShowResultListener() {
 //                    @Override
 //                    public void onSuccess() {

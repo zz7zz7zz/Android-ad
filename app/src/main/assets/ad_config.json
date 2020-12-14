@@ -9,7 +9,7 @@
     "adOffset" : 2,
     "adBufferSize" : 1,
     "adProviderList" : [ {
-      "adProviderName" : "google.admob1",
+      "adProviderName" : "google.admob",
       "adUnitId" : "ca-app-pub-3940256099942544/6300978111",
       "adType" : 1,
       "adTtl" : 3600,
@@ -22,12 +22,12 @@
       "adType" : 2,
       "adTtl" : 3600
     }, {
-      "adProviderName" : "google.admob3",
+      "adProviderName" : "google.admob",
       "adUnitId" : "ca-app-pub-3940256099942544/1033173712",
       "adType" : 3,
       "adTtl" : 3600
     }, {
-      "adProviderName" : "google.admob4",
+      "adProviderName" : "google.admob",
       "adUnitId" : "ca-app-pub-3940256099942544/5224354917",
       "adType" : 4,
       "adTtl" : 3600
