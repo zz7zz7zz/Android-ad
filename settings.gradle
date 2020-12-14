@@ -1,6 +1,7 @@
 rootProject.name='Android-ad'
 include ':app'
 
-include ':lib-ad-ingot:lib-ad-base', ':lib-ad-ingot:lib-ad-main',':lib-ad-ingot:lib-ad-google-admob',':lib-ad-ingot:lib-ad-huawei'
-include ':nativetemplates'
-project(':nativetemplates').projectDir = new File(rootDir, 'lib-ad-ingot/lib-ad-google-admob/nativetemplates/')
+include ':lib-ad-ingot:lib-ad-base'
+include ':lib-ad-ingot:lib-ad-main'
+include ':lib-ad-ingot:lib-ad-google-admob:nativetemplates',':lib-ad-ingot:lib-ad-google-admob'
+include ':lib-ad-ingot:lib-ad-huawei'

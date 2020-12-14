@@ -33,5 +33,5 @@ dependencies {
 
     implementation project(path: ':lib-ad-ingot:lib-ad-base')
     implementation 'com.google.android.gms:play-services-ads:19.5.0'
-    implementation project(':nativetemplates')
+    implementation project(':lib-ad-ingot:lib-ad-google-admob:nativetemplates')
 }
