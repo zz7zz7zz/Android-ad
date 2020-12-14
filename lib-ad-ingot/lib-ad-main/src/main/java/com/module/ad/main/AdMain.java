@@ -22,6 +22,7 @@ import com.module.ad.base.IAdListener;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -100,7 +101,7 @@ public class AdMain {
         //2.根据配置动态初始化
         String[] ad_ingot_dep_modules = BuildConfig.ad_ingot_dep_modules;
         for (String moduleName:ad_ingot_dep_modules) {
-            Log.v(TAG,"AdMain() init moduleName " + moduleName);
+            Log.v(TAG,"AdMain() init ad module " + moduleName);
             init(moduleName);
         }
     }
@@ -162,54 +163,110 @@ public class AdMain {
     }
 
     //----------------------- 1.加载 -----------------------
-    public void preLoad(Context context,int adPlaceHolder,String scenario){
-        int retCode = preLoad(context,adPlaceHolder,null,scenario,false);
+    public int preLoad(Context context,int adPlaceHolder,String scenario){
+        int retCode = 0;
+
+        AdConfig adConfig = AdConfigMgr.getInstance().adConfig;
+        AdConfig.AdPlaceHolderConfig adPlaceHolderConfig = adConfig.getAdPlaceHolderConfig(adPlaceHolder);
+        String fileName = "ad_ingot";
+        String key = String.format("placeholder_%d_adFreqType_%d",adPlaceHolder,adPlaceHolderConfig.adFreqType);
+        if(adPlaceHolderConfig.adFreqType == AdConfig.AdPlaceHolderConfig.AD_FREQ_TYPE_COUNT){
+            long value = AdSharePreUtil.getLong(context,fileName,key) + 1;
+            AdSharePreUtil.asynPutLong(context,fileName,key,value);
+
+            if(!(value == adPlaceHolderConfig.adOffset || (value - adPlaceHolderConfig.adOffset) % adPlaceHolderConfig.adFreq == 0)){
+                retCode = -11;
+            }
+        }else if(adPlaceHolderConfig.adFreqType == AdConfig.AdPlaceHolderConfig.AD_FREQ_TYPE_SECOND){
+            long old = AdSharePreUtil.getLong(context,fileName,key);
+            long now = System.currentTimeMillis();
+            if((old == 0 && now > adPlaceHolderConfig.adOffset) || now > (old + adPlaceHolderConfig.adFreq * 1000)){
+                AdSharePreUtil.asynPutLong(context,fileName,key,now);
+            }else{
+                retCode = -12;
+            }
+        }
+
+        if(retCode == 0){
+            retCode = innerPreLoad(context,adPlaceHolder,null,scenario,false);
+        }
         Log.v(TAG,"preLoad retCode " + retCode);
+        return retCode;
     }
 
-    public void forcePreLoad(Context context,int adPlaceHolder,String scenario){
-        int retCode = preLoad(context,adPlaceHolder,null,scenario,true);
+    public int forcePreLoad(Context context,int adPlaceHolder,String scenario){
+        int retCode = innerPreLoad(context,adPlaceHolder,null,scenario,true);
         Log.v(TAG,"forcePreLoad retCode " + retCode);
+        return retCode;
     }
 
-    public int preLoad(Context context, int adPlaceHolder, String adProviderName, String scenario,boolean force){
+    private int innerPreLoad(Context context, int adPlaceHolder, String adProviderName, String scenario,boolean force){
         AdConfig adConfig = AdConfigMgr.getInstance().adConfig;
 
+        AdConfig.AdProvider adProvider = null;
+        IAd ad = null;
+        int adProviderSize = adConfig.getAdProviderSize(adPlaceHolder,adProviderName);
+        int findCount = 0;
+        while(true){
+
+            adProvider = adConfig.getRequestAdProvider(adPlaceHolder,adProviderName);
+            findCount ++;
+
+            if (adProviderSize == findCount){//找了一遍
+                if(null == adProvider){
+                    adConfig.setRequestIndex(adPlaceHolder,0);
+                    resetPreloadTime(context,adPlaceHolder,force);
+                    return -2;
+                }
+
+                ad = adMap.get(adProvider.adProviderName);
+                if(null == ad){
+                    adConfig.setRequestIndex(adPlaceHolder,0);
+                    resetPreloadTime(context,adPlaceHolder,force);
+                    return -3;
+                }
+            }else{
+                if(null == adProvider){
+                    int index = AdConfigMgr.getInstance().adConfig.getRequestIndex(adPlaceHolder);
+                    AdConfigMgr.getInstance().adConfig.setRequestIndex(adPlaceHolder,index+1);
+                    Log.v(TAG,"preLoad getRequestAdProvider " + -2 + " findCount " + findCount);
+                    continue;
+                }
+
+                ad = adMap.get(adProvider.adProviderName);
+                if(null == ad){
+                    int index = AdConfigMgr.getInstance().adConfig.getRequestIndex(adPlaceHolder);
+                    AdConfigMgr.getInstance().adConfig.setRequestIndex(adPlaceHolder,index+1);
+                    Log.v(TAG,"preLoad adMap.get " + -3 + " findCount " + findCount);
+                    continue;
+                }
+            }
+
+            break;
+        }
+
+        AdEntity mAdEntity =new AdEntity(scenario,adPlaceHolder,adProvider);
+        mAdEntity.force = force;
+        ad.onAdPreload(context, mAdEntity, proxyListener);
+
+        return 0;
+    }
+
+    //重置加载时机
+    private void resetPreloadTime(Context context,int adPlaceHolder,boolean force){
+        AdConfig adConfig = AdConfigMgr.getInstance().adConfig;
         if(!force){
             AdConfig.AdPlaceHolderConfig adPlaceHolderConfig = adConfig.getAdPlaceHolderConfig(adPlaceHolder);
             String fileName = "ad_ingot";
             String key = String.format("placeholder_%d_adFreqType_%d",adPlaceHolder,adPlaceHolderConfig.adFreqType);
             if(adPlaceHolderConfig.adFreqType == AdConfig.AdPlaceHolderConfig.AD_FREQ_TYPE_COUNT){
-                long value = AdSharePreUtil.getLong(context,fileName,key) + 1;
+                long value = AdSharePreUtil.getLong(context,fileName,key)-1;
                 AdSharePreUtil.asynPutLong(context,fileName,key,value);
-
-                if(!(value == adPlaceHolderConfig.adOffset || (value - adPlaceHolderConfig.adOffset) % adPlaceHolderConfig.adFreq == 0)){
-                    return -11;
-                }
             }else if(adPlaceHolderConfig.adFreqType == AdConfig.AdPlaceHolderConfig.AD_FREQ_TYPE_SECOND){
-                long old = AdSharePreUtil.getLong(context,fileName,key);
-                long now = System.currentTimeMillis();
-                if((old == 0 && now > adPlaceHolderConfig.adOffset) || now > (old + adPlaceHolderConfig.adFreq * 1000)){
-                    AdSharePreUtil.asynPutLong(context,fileName,key,now);
-                }else{
-                    return -12;
-                }
+                long now = System.currentTimeMillis() - adPlaceHolderConfig.adFreq * 1000 - 1;
+                AdSharePreUtil.asynPutLong(context,fileName,key,now);
             }
         }
-
-        AdConfig.AdProvider adProvider = adConfig.getRequestAdProvider(adPlaceHolder,adProviderName);
-        if(null == adProvider){
-            return -2;
-        }
-
-        IAd ad = adMap.get(adProvider.adProviderName);
-        if(null == ad){
-            return -3;
-        }
-
-        ad.onAdPreload(context,new AdEntity(scenario,adPlaceHolder,adProvider), proxyListener);
-
-        return 0;
     }
 
     //----------------------- 2.展示 -----------------------
@@ -297,6 +354,16 @@ public class AdMain {
     private AdEntity getShowAdEntity(int adPlaceHolder, String adProviderName){
         ArrayList<AdEntity> ret = adObjectMap.get(adPlaceHolder);
         if(null != ret){
+
+            long currentTimeMillis = System.currentTimeMillis();
+            Iterator<AdEntity> it = ret.iterator();
+            while (it.hasNext()) {
+                AdEntity item = it.next();
+                if( currentTimeMillis > (item.ad_resp_time_millis + item.ad_ttl * 1000)){
+                    it.remove();
+                }
+            }
+
             for (int i = 0;i<ret.size();i++){
                 if(!TextUtils.isEmpty(adProviderName)){
                     if(adProviderName.equals(ret.get(i).adProvider.adProviderName)){
@@ -456,10 +523,11 @@ public class AdMain {
                 if(index < size-1){
                     //转到下一个广告商
                     AdConfigMgr.getInstance().adConfig.setRequestIndex(adPlaceHolder,index+1);
-                    forcePreLoad(context,adPlaceHolder, scenario);
+                    innerPreLoad(context,adPlaceHolder,null, scenario,adEntity.force);
                     return;
                 }else{
                     AdConfigMgr.getInstance().adConfig.setRequestIndex(adPlaceHolder,0);
+                    resetPreloadTime(context,adPlaceHolder,adEntity.force);
                 }
             }
 

@@ -33,6 +33,8 @@ public class HwInterstitial implements IAd {
             public void onAdLoaded() {
                 // 广告获取成功调用
                 adEntity.ad = HwInterstitial.this;
+                adEntity.ad_resp_time_millis = System.currentTimeMillis();
+                adEntity.ad_ttl = adEntity.adProvider.adTtl;
                 if(null != listener){
                     listener.onResponse(context,true,adEntity.scenario,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
                 }
@@ -41,7 +43,7 @@ public class HwInterstitial implements IAd {
             public void onAdFailed(int errorCode) {
                 // 广告获取失败时调用
                 if(null != listener){
-                    listener.onResponse(context,false,adEntity.scenario,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,null);
+                    listener.onResponse(context,false,adEntity.scenario,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
                 }
             }
             @Override

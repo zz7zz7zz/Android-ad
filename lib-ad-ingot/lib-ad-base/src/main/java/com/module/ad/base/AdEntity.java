@@ -9,8 +9,13 @@ public class AdEntity {
     //request 广告商
     public AdConfig.AdProvider adProvider;
 
+    //是否强制请求
+    public boolean force;
+
     //response
     public IAd ad;
+    public long ad_resp_time_millis;
+    public long ad_ttl;
 
     //show 广告位
     public int showAdPlaceHolder;

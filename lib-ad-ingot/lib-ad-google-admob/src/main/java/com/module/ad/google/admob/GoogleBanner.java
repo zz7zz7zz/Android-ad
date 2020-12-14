@@ -43,6 +43,8 @@ class GoogleBanner implements IAd  , LifecycleObserver {
 
                 // 广告获取成功调用
                 adEntity.ad = GoogleBanner.this;
+                adEntity.ad_resp_time_millis = System.currentTimeMillis();
+                adEntity.ad_ttl = adEntity.adProvider.adTtl;
                 if(null != listener){
                     listener.onResponse(context,true, adEntity.scenario, adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
                 }
@@ -52,7 +54,7 @@ class GoogleBanner implements IAd  , LifecycleObserver {
             public void onAdFailedToLoad(LoadAdError adError) {
                 // Code to be executed when an ad request fails.
                 if(null != listener){
-                    listener.onResponse(context,false,adEntity.scenario,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,null);
+                    listener.onResponse(context,false,adEntity.scenario,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
                 }
             }
 
@@ -88,7 +90,9 @@ class GoogleBanner implements IAd  , LifecycleObserver {
     @Override
     public void onAdShow(Context context, AdEntity adEntity, IAdListener listener, ViewGroup adViewParent) {
         if(null != adView){
-            adViewParent.removeView(adView);
+            if(null != adView.getParent()){
+                ((ViewGroup)(adView.getParent())).removeView(adView);
+            }
             adViewParent.addView(adView);
 
             if(null != listener){
@@ -121,6 +125,9 @@ class GoogleBanner implements IAd  , LifecycleObserver {
     public void onDestroy(){
         if (adView != null) {
             adView.destroy();
+            if(null != adView.getParent()){
+                ((ViewGroup)(adView.getParent())).removeView(adView);
+            }
         }
     }
 }

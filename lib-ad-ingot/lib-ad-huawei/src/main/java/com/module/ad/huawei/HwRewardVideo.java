@@ -35,6 +35,8 @@ public class HwRewardVideo implements IAd {
             public void onRewardedLoaded() {
                 // 激励广告加载成功
                 adEntity.ad = HwRewardVideo.this;
+                adEntity.ad_resp_time_millis = System.currentTimeMillis();
+                adEntity.ad_ttl = adEntity.adProvider.adTtl;
                 if(null != listener){
                     listener.onResponse(context,true,adEntity.scenario,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
                 }
@@ -43,7 +45,7 @@ public class HwRewardVideo implements IAd {
             public void onRewardAdFailedToLoad(int errorCode) {
                 // 激励广告加载失败
                 if(null != listener){
-                    listener.onResponse(context,false,adEntity.scenario,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,null);
+                    listener.onResponse(context,false,adEntity.scenario,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
                 }
             }
         };

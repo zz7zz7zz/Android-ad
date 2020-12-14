@@ -40,6 +40,8 @@ public class GoogleRewardVideo implements IAd {
                 // Ad successfully loaded.
                 // 广告获取成功调用
                 adEntity.ad = GoogleRewardVideo.this;
+                adEntity.ad_resp_time_millis = System.currentTimeMillis();
+                adEntity.ad_ttl = adEntity.adProvider.adTtl;
                 if(null != listener){
                     listener.onResponse(context,true, adEntity.scenario, adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
                 }
@@ -49,7 +51,7 @@ public class GoogleRewardVideo implements IAd {
             public void onRewardedAdFailedToLoad(LoadAdError adError) {
                 // Ad failed to load.
                 if(null != listener){
-                    listener.onResponse(context,false,adEntity.scenario,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,null);
+                    listener.onResponse(context,false,adEntity.scenario,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
                 }
             }
         };

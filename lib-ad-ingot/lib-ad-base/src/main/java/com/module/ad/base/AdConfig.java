@@ -73,6 +73,25 @@ public class AdConfig {
         return null != mAdPlaceHolderConfig && null != mAdPlaceHolderConfig.adProviderList ? mAdPlaceHolderConfig.adProviderList.size() : 0;
     }
 
+    public int getAdProviderSize(int adPlaceHolder , String adProviderName){
+        if(TextUtils.isEmpty(adProviderName)){
+            return getAdProviderSize(adPlaceHolder);
+        }else{
+            int ret_size = 0;
+            AdPlaceHolderConfig mAdPlaceHolderConfig= adPlaceHolderListMap.get(adPlaceHolder);
+            if(null != mAdPlaceHolderConfig && null != mAdPlaceHolderConfig.adProviderList && mAdPlaceHolderConfig.adProviderList.size() > 0){
+                int size = mAdPlaceHolderConfig.adProviderList.size();
+                for (int i = 0 ;i<size;i++){
+                    AdProvider adProvider = mAdPlaceHolderConfig.adProviderList.get(i);
+                    if(adProviderName.equals(adProvider.adProviderName)){
+                        ret_size++;
+                    }
+                }
+            }
+            return ret_size;
+        }
+    }
+
     public int getRequestIndex(int adPlaceHolder){
         Integer index = adPlaceHolderRequestIndexMap.get(adPlaceHolder);
         if(null != index){

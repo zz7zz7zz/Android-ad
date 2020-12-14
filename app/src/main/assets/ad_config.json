@@ -9,28 +9,51 @@
     "adOffset" : 2,
     "adBufferSize" : 1,
     "adProviderList" : [ {
+      "adProviderName" : "google.admob",
+      "adUnitId" : "ca-app-pub-3940256099942544/6300978111",
+      "adType" : 1,
+      "adTtl" : 3600,
+      "banner_size_width" : 360,
+      "banner_size_height" : 100,
+      "banner_refresh_freq" : 15
+    },{
+      "adProviderName" : "google.admob",
+      "adUnitId" : "ca-app-pub-3940256099942544/2247696110",
+      "adType" : 2,
+      "adTtl" : 3600
+    }, {
+      "adProviderName" : "google.admob",
+      "adUnitId" : "ca-app-pub-3940256099942544/1033173712",
+      "adType" : 3,
+      "adTtl" : 3600
+    }, {
+      "adProviderName" : "google.admob",
+      "adUnitId" : "ca-app-pub-3940256099942544/5224354917",
+      "adType" : 4,
+      "adTtl" : 3600
+    },{
       "adProviderName" : "huawei",
       "adUnitId" : "testw6vs28auh3",
-      "adType" : "1",
-      "adTtl" : "3600",
+      "adType" : 1,
+      "adTtl" : 3600,
       "banner_size_width" : 360,
       "banner_size_height" : 144,
       "banner_refresh_freq" : 15
     }, {
       "adProviderName" : "huawei",
       "adUnitId" : "testy63txaom86",
-      "adType" : "2",
-      "adTtl" : "3600"
+      "adType" : 2,
+      "adTtl" : 3600
     }, {
       "adProviderName" : "huawei",
       "adUnitId" : "teste9ih9j0rc3",
-      "adType" : "3",
-      "adTtl" : "3600"
+      "adType" : 3,
+      "adTtl" : 3600
     }, {
       "adProviderName" : "huawei",
       "adUnitId" : "testx9dtjwj8hp",
-      "adType" : "4",
-      "adTtl" : "3600"
+      "adType" : 4,
+      "adTtl" : 3600
     }],
     "adReuseList" : [ {
       "adPlaceHolder" : "2",
@@ -50,8 +73,8 @@
     "adProviderList" : [{
       "adProviderName" : "huawei",
       "adUnitId" : "testu7m3hc4gvm",
-      "adType" : "2",
-      "adTtl" : "3600"
+      "adType" : 2,
+      "adTtl" : 3600
     }],
     "adReuseList" : [ {
       "adPlaceHolder" : "1",
@@ -60,7 +83,7 @@
     }, {
       "adPlaceHolder" : "1",
       "adProviderName" : "huawei",
-      "adType" : "2"
+      "adType" : 2
     }]
   }],
   "preload": {

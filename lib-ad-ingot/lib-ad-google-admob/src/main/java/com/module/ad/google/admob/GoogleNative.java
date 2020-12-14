@@ -46,6 +46,8 @@ public class GoogleNative implements IAd , LifecycleObserver {
 
                         mUnifiedNativeAd = unifiedNativeAd;
                         adEntity.ad = GoogleNative.this;
+                        adEntity.ad_resp_time_millis = System.currentTimeMillis();
+                        adEntity.ad_ttl = adEntity.adProvider.adTtl;
                         if(null != listener){
                             listener.onResponse(context,true,adEntity.scenario,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
                         }
@@ -62,7 +64,7 @@ public class GoogleNative implements IAd , LifecycleObserver {
                     public void onAdFailedToLoad(int errorCode) {
                         // Handle the failure by logging, altering the UI, and so on.
                         if(null != listener){
-                            listener.onResponse(context,false,adEntity.scenario,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,null);
+                            listener.onResponse(context,false,adEntity.scenario,adEntity.adPlaceHolder,adEntity.adProvider.adType,adEntity.adProvider.adUnitId,adEntity);
                         }
                     }
 

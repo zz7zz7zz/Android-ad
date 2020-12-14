@@ -15,6 +15,7 @@ AdUnitId: App开发商在第三方广告商中申请的广告位
 --------------
 
 [谷歌广告](https://developers.google.com/admob/?hl=en#apps)
+[谷歌广告中文版](https://developers.google.cn/admob)
 
 [FB广告](https://developers.facebook.com/docs/audience-network/)
 
