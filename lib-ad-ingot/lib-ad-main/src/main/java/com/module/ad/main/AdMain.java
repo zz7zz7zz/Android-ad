@@ -306,6 +306,7 @@ public class AdMain {
                 AdDialog.show((Activity) context, new AdDialog.IAdDialogListener() {
                     @Override
                     public void onShow(ViewGroup ...adViewParent) {
+                        finalAdEntity.showFromDialog = true;
                         finalAdEntity.ad.onAdShow(context, finalAdEntity, proxyListener,adViewParent[0]);
 
                         //以下逻辑可以展示多个广告

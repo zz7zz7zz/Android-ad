@@ -117,9 +117,9 @@ public class GoogleNative implements IAd , LifecycleObserver {
         }
 
         //方法一：使用谷歌提供的模板
-        final ViewGroup nativeView = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.google_native_template, null);
+        final ViewGroup nativeView = (ViewGroup) LayoutInflater.from(context).inflate(adEntity.showFromDialog ? R.layout.google_native_template_medium : R.layout.google_native_template_small, null);
         NativeTemplateStyle styles = new
-                NativeTemplateStyle.Builder().withMainBackgroundColor(new ColorDrawable(Color.RED)).build();
+                NativeTemplateStyle.Builder().withMainBackgroundColor(new ColorDrawable(Color.WHITE)).build();
 
         TemplateView template = nativeView.findViewById(R.id.my_template);
         template.setStyles(styles);
