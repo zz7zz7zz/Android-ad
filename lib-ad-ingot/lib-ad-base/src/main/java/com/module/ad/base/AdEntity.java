@@ -19,6 +19,7 @@ public class AdEntity {
 
     //show 广告位
     public int showAdPlaceHolder;
+    public boolean showFromDialog;
 
     public AdEntity(String scenario, int adPlaceHolder, AdConfig.AdProvider adProvider) {
         this.scenario = scenario;

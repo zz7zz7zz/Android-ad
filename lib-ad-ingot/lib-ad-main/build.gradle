@@ -62,7 +62,7 @@ dependencies {
     def ad_ingot_dep_modules = libs.get("ad_ingot_dep_modules")
     for (String moduleName in ad_ingot_dep_modules) {
 
-        println("moduleName                " + moduleName)
+        println("dependence ad module -->                " + moduleName)
 
         if(moduleName == 'google.admob'){
             implementation project(path: ':lib-ad-ingot:lib-ad-google-admob')
